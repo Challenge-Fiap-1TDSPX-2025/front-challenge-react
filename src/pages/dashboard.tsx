@@ -1,37 +1,36 @@
 import { useState } from "react";
 import Sidebar from "../components/side-bar";
+import type { TicketProps } from "../types/ticket";
+import { TicketList } from "../components/ticket-list";
 
 export function Dashboard() {
   const [activeTab, setActiveTab] = useState("todos");
 
-  const tickets = [
+  const tickets: TicketProps[] = [
     {
       id: 1,
       title: "Como faço para acessar minha consulta?",
-      description:
-        "Estou tentando entrar na minha consulta mas não consigo acessar o sistema. Poderiam me ajudar?",
+      description: "Estou tentando entrar na minha consulta mas não consigo acessar o sistema.",
       status: "andamento",
       date: "15/05/2023 10:45",
     },
     {
       id: 2,
       title: "Problema com login no aplicativo",
-      description:
-        "Não consigo fazer login no aplicativo móvel. A senha está correta, mas o sistema não reconhece meu usuário.",
+      description: "Não consigo fazer login no aplicativo móvel.",
       status: "abertos",
       date: "16/05/2023 14:30",
     },
     {
       id: 3,
-      title: "Não recebi o link da minha consulta.",
-      description:
-        "Olá, gostaria de saber se o link da minha consulta já foi enviado. Não recebi nada até agora. Tem como verificar?",
-      status: "resolvidos",
-      date: "14/05/2023 09:15",
+      title: "Problema com login no aplicativo",
+      description: "Não consigo fazer login no aplicativo móvel.",
+      status: "abertos",
+      date: "16/05/2023 14:30",
     },
   ];
 
-  // Filtra os tickets com base na aba ativa
+ 
   const filteredTickets =
     activeTab === "todos"
       ? tickets
@@ -80,7 +79,7 @@ export function Dashboard() {
                     : "text-gray-600 hover:text-gray-800"
                 }`}
             >
-              {/* Indicador colorido */}
+
               <span
                 className={`w-3 h-3 rounded-full 
                   ${status === "todos"
@@ -92,7 +91,6 @@ export function Dashboard() {
                     : "bg-green-500"}`}
               ></span>
 
-              {/* Texto */}
               {status === "todos"
                 ? "Todos os tickets"
                 : status === "andamento"
@@ -102,7 +100,7 @@ export function Dashboard() {
           ))}
         </div>
 
-        
+        <TicketList tickets={tickets} />
       </main>
     </div>
   );
