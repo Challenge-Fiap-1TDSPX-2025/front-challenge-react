@@ -68,7 +68,7 @@ export function FaqSection() {
   };
 
   return (
-    <section className="w-full py-12 bg-[#add2f7]">
+    <section className="w-full py-12 bg-[#add2f7] min-h-[70vh]">
       <div className="container mx-auto px-5 flex flex-col items-center">
         {/* Seu "cabecalho-secao" com Tailwind */}
         <div className="text-center mb-8">
