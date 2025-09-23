@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Home } from './pages/home'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Layout } from "./components/layout";
-import {Teste} from "./pages/teste"
+import {Faq} from "./pages/faq"
 import { Dashboard } from './pages/dashboard';
 
 
@@ -14,7 +14,7 @@ function App() {
         <Route path='/dashboard' element={<Dashboard/>} />   
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />     
-          <Route path='/teste' element={<Teste />} />       
+          <Route path='/faq' element={<Faq/>} />       
         </Route>
       </Routes>
     </Router>
