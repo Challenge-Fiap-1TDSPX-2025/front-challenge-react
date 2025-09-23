@@ -70,13 +70,13 @@ export function FaqSection() {
   return (
     <section className="w-full py-12 bg-[#add2f7] min-h-[70vh]">
       <div className="container mx-auto px-5 flex flex-col items-center">
-        {/* Seu "cabecalho-secao" com Tailwind */}
+
         <div className="text-center mb-8">
           <h1 className="text-5xl font-bold text-gray-800">FAQ</h1>
           <p className="text-xl text-gray-600">Perguntas Frequentes</p>
         </div>
 
-        {/* Seu "lista-faq" agora é dinâmico */}
+   
         <div className="w-full max-w-4xl">
           {faqData.map((item) => (
             <CardPerguntas
@@ -84,7 +84,7 @@ export function FaqSection() {
               id={item.id}
               question={item.question}
               answer={item.answer}
-              isOpen={openId === item.id} // A mágica acontece aqui
+              isOpen={openId === item.id} 
               onClick={() => handleItemClick(item.id)} 
             />
           ))}
