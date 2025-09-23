@@ -40,16 +40,16 @@ export function IntegrantesSection() {
   return (
     // Tradução da classe .secao-integrantes do seu CSS
     <section className="py-20 bg-white">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 flex flex-col justify-items-center">
         <h1 className="text-4xl font-bold text-center mb-16 text-gray-800">
           Integrantes
         </h1>
         {/* Tradução da classe .grade-integrantes */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="flex flex-wrap justify-center gap-10">
           {/* 5. Usa .map() para renderizar um card para cada integrante */}
           {integrantesData.map((integrante, index) => (
             <CardIntegrante 
-              key={index}
+              key={index} 
               {...integrante} // A sintaxe {...} passa todas as propriedades do objeto de uma vez
             />
           ))}
