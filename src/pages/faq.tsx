@@ -1,4 +1,4 @@
-export function Teste(){
+export function Faq(){
     return(
       <main className="w-full">
       

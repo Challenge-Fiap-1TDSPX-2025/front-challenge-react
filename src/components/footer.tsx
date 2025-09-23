@@ -30,7 +30,7 @@ export function Footer() {
                     <LinkRodape
                         tituloLink="Suporte"
                         itemListaLink={[
-                            { label: "Central de Ajuda", href: "/teste" },
+                            { label: "Central de Ajuda", href: "/faq" },
                             { label: "Contato", href: "/contato" }
                         ]}
                     />
