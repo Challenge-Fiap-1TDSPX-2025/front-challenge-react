@@ -43,10 +43,8 @@ export function IntegrantesSection() {
       <div className="container mx-auto px-4 flex flex-col justify-items-center">
         <h1 className="text-4xl font-bold text-center mb-16 text-gray-800">
           Integrantes
-        </h1>
-        {/* Tradução da classe .grade-integrantes */}
+        </h1>        
         <div className="flex flex-wrap justify-center gap-10">
-          {/* 5. Usa .map() para renderizar um card para cada integrante */}
           {integrantesData.map((integrante, index) => (
             <CardIntegrante 
               key={index} 
