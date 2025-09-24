@@ -1,12 +1,13 @@
 import React from 'react';
 import logo from '../assets/logo-challenge.png';
 import { Button } from '../components/button';
+import { Link } from 'react-router-dom'; 
 
-export function TipoUsuario() {
+export function EscolhaPerfil() { // Ou o nome que você deu à sua página
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-sky-50">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-sky-50 p-4">
       <div className="p-8 bg-white rounded-lg shadow-xl text-center w-full max-w-md">
-
+        
         <img src={logo} alt="HealthSupport Logo" className="w-20 h-20 mx-auto mb-4" />
 
         <h1 className="text-2xl font-bold text-gray-800 mb-2">
@@ -17,7 +18,6 @@ export function TipoUsuario() {
         </p>
 
         <div className="space-y-4">
-          {/* Usamos nosso novo componente aqui! */}
           <Button to="/paciente/dashboard" variant="indigo">
             Sou Paciente
           </Button>
@@ -26,6 +26,16 @@ export function TipoUsuario() {
             Sou Atendente
           </Button>
         </div>
+
+        <div className="mt-8">
+          <Link 
+            to="/" 
+            className="text-sm text-gray-500 hover:text-gray-800 hover:underline transition-colors"
+          >
+            Voltar para a página inicial
+          </Link>
+        </div>
+
       </div>
     </div>
   );
