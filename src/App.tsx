@@ -5,6 +5,7 @@ import { Layout } from "./components/layout";
 import {Faq} from "./pages/faq"
 import { Dashboard } from './pages/dashboard';
 import { IntegrantesPage } from './pages/integrantes';
+import { TipoUsuario } from './pages/tipo-usuario';
 
 
 
@@ -14,6 +15,7 @@ function App() {
     <Router>
       <Routes>
         <Route path='/dashboard' element={<Dashboard/>} /> 
+        <Route path='/login' element={<TipoUsuario/>} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />     
           <Route path='/faq' element={<Faq/>} />
