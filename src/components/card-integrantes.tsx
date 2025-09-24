@@ -17,7 +17,7 @@ export function CardIntegrante({
 }: CardIntegranteProps) {
   return (
     
-    <div className="flex flex-col text-center transition-transform duration-300 ease-in-out hover:-translate-y-2">
+    <div className="flex flex-col w-[273px] text-center justify-center transition-transform duration-300 ease-in-out hover:-translate-y-2">
       
       
       <div className="mx-auto mb-4">
