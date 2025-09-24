@@ -16,10 +16,10 @@ export function Header() {
                     <a className="text-sm font-medium hover:text-indigo-600" href="#como-funciona">Como Funciona</a>
                     <a className="text-sm font-medium hover:text-indigo-600" href="#depoimentos">Depoimentos</a>
                     <a href="contato.html" className="text-sm font-medium hover:text-indigo-600">Contato</a>
-                    <Link to="/dashboard" className='botoes'>
+                    <Link to="/login" className='botoes'>
                         Entrar
                     </Link>
-                    <a href="" className="botoes">
+                    <a href="/login" className="botoes">
                         Cadastre-se
                     </a>
                 </nav>
