@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FormInput } from '../components/form-input'; 
 
 export function Contato() {
   const [formData, setFormData] = useState({
@@ -70,112 +71,56 @@ export function Contato() {
                 <fieldset className="border border-gray-300 p-6 rounded-md">
                   <legend className="text-lg font-semibold text-gray-800 px-2">INFORMAÇÕES PESSOAIS</legend>
                   <div className="space-y-4">
-                    <div className="campo-formulario">
-                      <label htmlFor="nome" className="block text-sm font-medium text-gray-700 mb-1">
-                        NOME<span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="nome"
-                        name="nome"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        required
-                        value={formData.nome}
-                        onChange={handleChange}
-                      />
-                    </div>
+                    <FormInput
+                      label="NOME"
+                      id="nome"
+                      name="nome"
+                      value={formData.nome}
+                      onChange={handleChange}
+                      required={true}
+                    />
 
-                    <div className="campo-formulario">
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                        E-MAIL<span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        required
-                        value={formData.email}
-                        onChange={handleChange}
-                      />
-                    </div>
+                    <FormInput
+                      label="E-MAIL"
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required={true}
+                    />
                     
-                    <div className="campo-formulario">
-                      <label htmlFor="confirmaEmail" className="block text-sm font-medium text-gray-700 mb-1">
-                        CONFIRMAÇÃO DO E-MAIL<span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        id="confirmaEmail"
-                        name="confirmaEmail"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        required
-                        value={formData.confirmaEmail}
+                    <FormInput
+                      label="CONFIRMAÇÃO DO E-MAIL"
+                      id="confirmaEmail"
+                      name="confirmaEmail"
+                      type="email"
+                      value={formData.confirmaEmail}
+                      onChange={handleChange}
+                      required={true}
+                    />
+
+                    <div className="grid grid-cols-3 gap-2">
+                      <FormInput
+                        label="DDD"
+                        id="ddd"
+                        name="ddd"
+                        value={formData.ddd}
                         onChange={handleChange}
+                        required={true}
+                        maxLength={2}
+                        colSpan="col-span-1"
                       />
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-2">
-                        <div className="col-span-1">
-                             <label htmlFor="ddd" className="block text-sm font-medium text-gray-700 mb-1">
-                                DDD<span className="text-red-500">*</span>
-                             </label>
-                             <input
-                               type="text"
-                               id="ddd"
-                               name="ddd"
-                               maxLength={2}
-                               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                               required
-                               value={formData.ddd}
-                               onChange={handleChange}
-                             />
-                        </div>
-                        <div className="col-span-2">
-                            <label htmlFor="telefone" className="block text-sm font-medium text-gray-700 mb-1">
-                                TELEFONE<span className="text-red-500">*</span>
-                            </label>
-                            <input
-                              type="text"
-                              id="telefone"
-                              name="telefone"
-                              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                              required
-                              value={formData.telefone}
-                              onChange={handleChange}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-2">
-                        <div className="col-span-2">
-                            <label htmlFor="cidade" className="block text-sm font-medium text-gray-700 mb-1">
-                                CIDADE<span className="text-red-500">*</span>
-                            </label>
-                            <input
-                              type="text"
-                              id="cidade"
-                              name="cidade"
-                              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                              required
-                              value={formData.cidade}
-                              onChange={handleChange}
-                            />
-                        </div>
-                        <div className="col-span-1">
-                            <label htmlFor="estado" className="block text-sm font-medium text-gray-700 mb-1">
-                                ESTADO<span className="text-red-500">*</span>
-                            </label>
-                            <input
-                              type="text"
-                              id="estado"
-                              name="estado"
-                              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                              required
-                              value={formData.estado}
-                              onChange={handleChange}
-                            />
-                        </div>
+                      <FormInput
+                        label="TELEFONE"
+                        id="telefone"
+                        name="telefone"
+                        type="tel"
+                        value={formData.telefone}
+                        onChange={handleChange}
+                        required={true}
+                        colSpan="col-span-2"
+                      />
                     </div>
                   </div>
                 </fieldset>
@@ -183,20 +128,30 @@ export function Contato() {
                 <fieldset className="border border-gray-300 p-6 rounded-md">
                   <legend className="text-lg font-semibold text-gray-800 px-2">MENSAGEM</legend>
                   <div className="space-y-4">
-                    <div className="campo-formulario">
-                      <label htmlFor="titulo" className="block text-sm font-medium text-gray-700 mb-1">
-                        TÍTULO DA MENSAGEM<span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="titulo"
-                        name="titulo"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        required
-                        value={formData.titulo}
-                        onChange={handleChange}
-                      />
-                    </div>
+                    <FormInput
+                      label="CIDADE"
+                      id="cidade"
+                      name="cidade"
+                      value={formData.cidade}
+                      onChange={handleChange}
+                      required={true}
+                    />
+                    <FormInput
+                      label="ESTADO"
+                      id="estado"
+                      name="estado"
+                      value={formData.estado}
+                      onChange={handleChange}
+                      required={true}
+                    />
+                    <FormInput
+                      label="TÍTULO DA MENSAGEM"
+                      id="titulo"
+                      name="titulo"
+                      value={formData.titulo}
+                      onChange={handleChange}
+                      required={true}
+                    />
                     <div className="campo-formulario">
                       <label htmlFor="mensagem" className="block text-sm font-medium text-gray-700 mb-1">
                         MENSAGEM<span className="text-red-500">*</span>
