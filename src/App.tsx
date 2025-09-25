@@ -7,6 +7,7 @@ import { Dashboard } from './pages/dashboard';
 import { IntegrantesPage } from './pages/integrantes';
 import { EscolhaPerfil } from './pages/tipo-usuario';
 import { PacienteDashboard } from './pages/paciente-page';
+import { Contato } from './pages/contato';
 
 
 
@@ -22,6 +23,7 @@ function App() {
           <Route index element={<Home />} />     
           <Route path='/faq' element={<Faq/>} />
           <Route path='/integrantes' element={<IntegrantesPage/>} />
+          <Route path='/contato' element={<Contato/>}/>
         </Route>
       </Routes>
     </Router>
