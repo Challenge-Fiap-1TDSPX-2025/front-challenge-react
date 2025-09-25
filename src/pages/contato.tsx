@@ -31,6 +31,22 @@ export function Contato() {
     alert('Formulário enviado com sucesso!');
   };
 
+  const handleReset = () => {
+    setFormData({
+      assunto: '',
+      nome: '',
+      email: '',
+      confirmaEmail: '',
+      ddd: '',
+      telefone: '',
+      cidade: '',
+      estado: '',
+      titulo: '',
+      mensagem: '',
+      termos: false,
+    });
+  };
+
   return (
     <main>
       <section className="py-20 bg-gray-100 min-h-screen">
@@ -187,7 +203,8 @@ export function Contato() {
 
               <div className="flex justify-end gap-4 mt-6">
                 <button
-                  type="reset"
+                  type="button" 
+                  onClick={handleReset} 
                   className="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition-colors"
                 >
                   LIMPAR
