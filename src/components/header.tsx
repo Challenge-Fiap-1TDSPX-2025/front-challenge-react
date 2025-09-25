@@ -15,7 +15,9 @@ export function Header() {
                     <a className="text-sm font-medium hover:text-indigo-600 padding" href="#solucoes">Soluções</a>
                     <a className="text-sm font-medium hover:text-indigo-600" href="#como-funciona">Como Funciona</a>
                     <a className="text-sm font-medium hover:text-indigo-600" href="#depoimentos">Depoimentos</a>
-                    <a href="contato.html" className="text-sm font-medium hover:text-indigo-600">Contato</a>
+                    <Link to="/contato" className='text-sm font-medium hover:text-indigo-600'>
+                        Contato
+                    </Link>
                     <Link to="/login" className='botoes'>
                         Entrar
                     </Link>
