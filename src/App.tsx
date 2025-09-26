@@ -8,6 +8,7 @@ import { IntegrantesPage } from './pages/integrantes';
 import { EscolhaPerfil } from './pages/tipo-usuario';
 import { PacienteDashboard } from './pages/paciente-page';
 import { Contato } from './pages/contato';
+import { NovoTicketPage } from './pages/novo-ticket';
 
 
 
@@ -19,6 +20,7 @@ function App() {
         <Route path='/dashboard' element={<Dashboard/>} /> 
         <Route path='/login' element={<EscolhaPerfil/>} />
         <Route path='/paciente/dashboard' element={<PacienteDashboard/>} />
+        <Route path='/paciente/tickets/novo' element={<NovoTicketPage/>} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />     
           <Route path='/faq' element={<Faq/>} />
