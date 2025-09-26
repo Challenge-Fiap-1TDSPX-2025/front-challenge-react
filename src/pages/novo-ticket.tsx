@@ -1,20 +1,15 @@
 import React, { useState } from 'react';
-
 import { Link, useNavigate } from 'react-router-dom';
 import { saveTicket } from '../services/ticket-services';
 import { FormInput } from '../components/form-input';
+import type { ProblemType } from '../types/ticket';
 
 export function NovoTicketPage() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [attachments, setAttachments] = useState<File[]>([]);
+  const [problemType, setProblemType] = useState<ProblemType>('agendamento-consulta');
   const navigate = useNavigate();
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      setAttachments(Array.from(event.target.files));
-    }
-  };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -22,8 +17,7 @@ export function NovoTicketPage() {
       alert('Por favor, preencha o título e a descrição.');
       return;
     }
-
-    saveTicket({ title, description, arquivos: attachments });
+    saveTicket({ title, description, problemType, arquivos: attachments });
     
     alert('Ticket criado com sucesso!');
     navigate('/paciente/tickets');
@@ -34,7 +28,6 @@ export function NovoTicketPage() {
       <div className="w-full max-w-2xl bg-white p-8 rounded-lg shadow-xl">
         <h1 className="text-3xl font-bold text-gray-800 mb-6">Criar Novo Ticket</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
-          
           <FormInput
             label="Título do Problema"
             id="title"
@@ -44,7 +37,23 @@ export function NovoTicketPage() {
             required={true}
             maxLength={100}
           />
-
+          <div>
+            <label htmlFor="problemType" className="block text-gray-700 text-sm font-bold mb-2">
+              Tipo de Problema
+            </label>
+            <select
+              id="problemType"
+              value={problemType}
+              onChange={(e) => setProblemType(e.target.value as ProblemType)}
+              className="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="agendamento-consulta">Agendamento de consulta</option>
+              <option value="duvidas-medicamentos">Dúvidas sobre medicamentos</option>
+              <option value="resultados-exames">Resultados de exames</option>
+              <option value="sintomas-mal-estar">Relatar sintomas / mal-estar</option>
+              <option value="outro">Outro</option>
+            </select>
+          </div>
           <div>
             <label htmlFor="description" className="block text-gray-700 text-sm font-bold mb-2">
               Descreva o Problema em Detalhes
@@ -57,8 +66,7 @@ export function NovoTicketPage() {
               placeholder="Descreva com o máximo de detalhes o que está acontecendo..."
             />
           </div>
-          
-          <div>
+           <div>
             <label htmlFor="attachments" className="block text-gray-700 text-sm font-bold mb-2">
               Anexos (JPG, PNG, PDF)
             </label>
@@ -66,7 +74,7 @@ export function NovoTicketPage() {
               id="attachments"
               type="file"
               multiple
-              onChange={handleFileChange}
+              onChange={(e) => setAttachments(Array.from(e.target.files || []))}
               accept=".jpg, .jpeg, .png, .pdf"
               className="block w-full text-sm text-gray-500
                 file:mr-4 file:py-2 file:px-4
@@ -81,8 +89,6 @@ export function NovoTicketPage() {
                 : 'Nenhum arquivo selecionado'}
             </div>
           </div>
-
-          
           <div className="flex items-center justify-end gap-4">
             <Link
               to="/paciente/dashboard"

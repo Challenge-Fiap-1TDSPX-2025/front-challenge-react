@@ -1,4 +1,4 @@
-import type { StoredTicket, TicketStatus } from "../types/ticket";
+import type { StoredTicket, TicketStatus, ProblemType } from "../types/ticket";
 
 type TicketComponentProps = {
   ticket: StoredTicket;
@@ -12,11 +12,19 @@ export function Ticket({ ticket, onDelete }: TicketComponentProps) {
     resolvido: { bg: 'bg-green-100', text: 'text-green-800', label: 'Resolvido' },
   };
 
+  const problemTypeLabels: Record<ProblemType, string> = {
+    'agendamento-consulta': 'Agendamento de consulta',
+    'duvidas-medicamentos': 'Dúvidas sobre medicamentos',
+    'resultados-exames': 'Resultados de exames',
+    'sintomas-mal-estar': 'Relatar sintomas / mal-estar',
+    'outro': 'Outro',
+  };
+
   const currentStatus = statusStyles[ticket.status];
+  const currentProblemTypeLabel = problemTypeLabels[ticket.problemType];
 
   return (
     <div className="bg-white shadow p-4 rounded-md border relative">
-      
       <button 
         onClick={() => onDelete(ticket.id)}
         className="absolute top-3 right-3 p-1 rounded-full text-gray-400 hover:bg-red-100 hover:text-red-600 transition-colors"
@@ -33,8 +41,16 @@ export function Ticket({ ticket, onDelete }: TicketComponentProps) {
           {new Date(ticket.data).toLocaleString('pt-BR')}
         </span>
       </div>
-      <h3 className="text-lg font-bold text-gray-800 mb-1">{ticket.title}</h3>
-      <p className="text-gray-600">{ticket.description}</p>
+
+      <h3 className="text-lg font-bold text-gray-800 mb-2">{ticket.title}</h3>
+
+      <div className="mb-3">
+        <span className="text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-1 rounded-md">
+          {currentProblemTypeLabel}
+        </span>
+      </div>
+
+      <p className="text-gray-600 mb-4">{ticket.description}</p>
       
       <div className="flex justify-between items-center mt-4">
         <div className="text-xs text-gray-500 truncate pr-4" title={ticket.arquivos.join(', ')}>
