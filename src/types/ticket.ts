@@ -15,3 +15,4 @@ export type TicketFilter = 'todos' | TicketStatus;
 export interface StoredTicket extends Omit<Ticket, 'arquivos'> {
   arquivos: string[]; // Usa apenas os nomes dos arquivos (strings)
 }
+

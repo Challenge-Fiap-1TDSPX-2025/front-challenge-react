@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+
+import { Link, useNavigate } from 'react-router-dom';
 import { saveTicket } from '../services/ticket-services';
-import { FormInput } from '../components/form-input'; //
+import { FormInput } from '../components/form-input';
 
 export function NovoTicketPage() {
   const [title, setTitle] = useState('');
@@ -34,7 +35,6 @@ export function NovoTicketPage() {
         <h1 className="text-3xl font-bold text-gray-800 mb-6">Criar Novo Ticket</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           
-          {/* 👇 2. USAMOS SEU COMPONENTE AQUI 👇 */}
           <FormInput
             label="Título do Problema"
             id="title"
@@ -43,7 +43,6 @@ export function NovoTicketPage() {
             onChange={(e) => setTitle(e.target.value)}
             required={true}
             maxLength={100}
-            // O 'type' é 'text' por padrão, então não precisamos passar
           />
 
           <div>
@@ -83,7 +82,14 @@ export function NovoTicketPage() {
             </div>
           </div>
 
-          <div className="flex items-center justify-end">
+          
+          <div className="flex items-center justify-end gap-4">
+            <Link
+              to="/paciente/dashboard"
+              className="text-gray-600 font-medium py-2 px-4 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              Voltar
+            </Link>
             <button
               type="submit"
               className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-full focus:outline-none focus:shadow-outline"
