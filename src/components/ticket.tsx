@@ -20,13 +20,20 @@ export function Ticket({ ticket, onDelete }: TicketComponentProps) {
     'outro': 'Outro',
   };
 
+  
+const firstMessage = (ticket.messages && ticket.messages[0]) 
+  ? ticket.messages[0].text 
+  : (ticket as any).description || 'Nenhuma descrição.';
   const currentStatus = statusStyles[ticket.status];
   const currentProblemTypeLabel = problemTypeLabels[ticket.problemType];
 
   return (
     <div className="bg-white shadow p-4 rounded-md border relative">
       <button 
-        onClick={() => onDelete(ticket.id)}
+        onClick={(event) => {
+          event.stopPropagation();
+          onDelete(ticket.id);
+        }}
         className="absolute top-3 right-3 p-1 rounded-full text-gray-400 hover:bg-red-100 hover:text-red-600 transition-colors"
         aria-label="Excluir ticket"
       >
@@ -37,9 +44,7 @@ export function Ticket({ ticket, onDelete }: TicketComponentProps) {
 
       <div className="flex justify-between items-center mb-2 pr-8">
         <span className="font-semibold text-gray-700">Ticket# {ticket.id}</span>
-        <span className="text-sm text-gray-500">
-          {new Date(ticket.data).toLocaleString('pt-BR')}
-        </span>
+        <span className="text-sm text-gray-500">{new Date(ticket.data).toLocaleString('pt-BR')}</span>
       </div>
 
       <h3 className="text-lg font-bold text-gray-800 mb-2">{ticket.title}</h3>
@@ -50,13 +55,14 @@ export function Ticket({ ticket, onDelete }: TicketComponentProps) {
         </span>
       </div>
 
-      <p className="text-gray-600 mb-4">{ticket.description}</p>
+      <p className="text-gray-600 mb-4 truncate">
+        {firstMessage}
+      </p>
       
       <div className="flex justify-between items-center mt-4">
         <div className="text-xs text-gray-500 truncate pr-4" title={ticket.arquivos.join(', ')}>
           <span className="font-medium">Anexos:</span> {ticket.arquivos.join(', ') || 'Nenhum'}
         </div>
-        
         <span className={`inline-block px-2 py-1 text-xs font-semibold rounded ${currentStatus.bg} ${currentStatus.text}`}>
           {currentStatus.label}
         </span>

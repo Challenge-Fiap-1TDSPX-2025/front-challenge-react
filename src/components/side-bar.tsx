@@ -2,6 +2,7 @@ import profileUser from '../assets/profile-user.png'
 import group from '../assets/group.png'
 import ticket from '../assets/ticket.png'
 import settings from '../assets/settings.png'
+import { Link } from 'react-router-dom'
 
 export default function Sidebar() {
     return (
@@ -38,12 +39,12 @@ export default function Sidebar() {
             </nav>
 
 
-            <div className="p-5 border-t mt-auto">
-                <button className="flex items-center gap-2 w-full px-3 py-3 bg-indigo-500 text-white rounded hover:bg-indigo-600 hover:text-white transition-colors">
-                    <span>Sair</span>
-                </button>
+            <div className="p-5 border-t border-gray-300">
+                <Link to="/login" className="w-full block text-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-sky-950 transition-colors">
+                Sair
+                </Link>
             </div>
 
         </aside>
-    );
+    )
 }

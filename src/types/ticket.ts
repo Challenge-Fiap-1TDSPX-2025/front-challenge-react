@@ -1,5 +1,7 @@
 export type TicketStatus = 'aberto' | 'andamento' | 'resolvido';
 
+export type TicketFilter = TicketStatus | 'todos';
+
 export type ProblemType =
   | 'agendamento-consulta'
   | 'duvidas-medicamentos'
@@ -7,16 +9,23 @@ export type ProblemType =
   | 'sintomas-mal-estar'
   | 'outro';
 
+export interface Message {
+  author: 'paciente' | 'atendente';
+  text: string;
+  timestamp: string;
+}
+
 export interface Ticket {
   id: number;
   title: string;
-  description: string;
   status: TicketStatus;
-  data: string;
+  data: string; // Data de criação
   problemType: ProblemType;
+  messages: Message[]; 
   arquivos: File[];
 }
 
-export interface StoredTicket extends Omit<Ticket, 'arquivos'> {
+export interface StoredTicket extends Omit<Ticket, 'arquivos' | 'messages'> {
   arquivos: string[];
+  messages: Message[];
 }
