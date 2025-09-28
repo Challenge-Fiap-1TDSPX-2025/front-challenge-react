@@ -19,6 +19,19 @@ export function Dashboard() {
     setAllTickets(getTickets());
   }, []);
 
+  const ticketCounts = useMemo(() => {
+    const counts: Record<TicketFilter, number> = {
+      todos: allTickets.length,
+      aberto: 0,
+      andamento: 0,
+      resolvido: 0,
+    };
+    allTickets.forEach(ticket => {
+      counts[ticket.status]++;
+    });
+    return counts;
+  }, [allTickets]);
+
   const filteredTickets = useMemo(() => {
     return allTickets
       .filter(ticket => statusFilter === "todos" ? true : ticket.status === statusFilter)
@@ -80,13 +93,64 @@ export function Dashboard() {
       <main className="flex-1 p-4 sm:p-6 overflow-y-auto relative">
         <h1 className="text-3xl font-bold text-gray-800 mb-6">Tickets</h1>
         
-        
-        <div className="space-y-4">
-          {filteredTickets.map((ticket) => (
-            <div key={ticket.id} onClick={() => setSelectedTicket(ticket)} className="cursor-pointer">
-              <Ticket ticket={ticket} onDelete={() => { alert('Apenas pacientes podem excluir tickets.'); }} />
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <select value={dateFilter} onChange={(e) => setDateFilter(e.target.value)} className="p-2 border rounded-md w-full bg-white">
+            <option value="todos">Data de criação</option>
+            <option value="hoje">Hoje</option>
+            <option value="semana">Esta Semana</option>
+            <option value="mes">Este Mês</option>
+          </select>
+          <select value={problemTypeFilter} onChange={(e) => setProblemTypeFilter(e.target.value as ProblemType | 'todos')} className="p-2 border rounded-md w-full bg-white">
+            <option value="todos">Tipo do problema</option>
+            {Object.entries(problemTypeLabels).map(([key, label]) => (
+                <option key={key} value={key}>{label}</option>
+            ))}
+          </select>
+          <input
+            type="text"
+            placeholder="Buscar ticket..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="p-2 border rounded-md w-full sm:col-span-2 lg:col-span-2 bg-white"
+          />
+        </div>
+
+        <div className="flex flex-wrap gap-2 border-b mb-6">
+          {(['todos', 'aberto', 'andamento', 'resolvido'] as TicketFilter[]).map((status) => (
+            <button
+              key={status}
+              onClick={() => setStatusFilter(status)}
+              className={`px-3 py-2 text-sm sm:text-base font-medium flex items-center gap-2 transition-colors rounded-t-md ${
+                statusFilter === status
+                  ? "text-indigo-600 border-b-2 border-indigo-600 bg-white"
+                  : "text-gray-600 hover:text-gray-800"
+              }`}
+            >
+              <span className={`w-3 h-3 rounded-full ${
+                status === "aberto" ? "bg-red-500" :
+                status === "andamento" ? "bg-yellow-500" :
+                status === "resolvido" ? "bg-green-500" : "bg-gray-400"
+              }`}></span>
+              <span>
+                {status === "todos" ? "Todos" : status.charAt(0).toUpperCase() + status.slice(1)}
+                <span className="ml-2 text-xs font-normal text-gray-500 bg-gray-200 rounded-full px-2 py-0.5">
+                  {ticketCounts[status]}
+                </span>
+              </span>
+            </button>
           ))}
+        </div>
+
+        <div className="space-y-4">
+          {filteredTickets.length > 0 ? (
+            filteredTickets.map((ticket) => (
+              <div key={ticket.id} onClick={() => setSelectedTicket(ticket)} className="cursor-pointer">
+                <Ticket ticket={ticket} onDelete={() => { alert('Apenas pacientes podem excluir tickets.'); }} />
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-500 py-8">Nenhum ticket encontrado com os filtros atuais.</p>
+          )}
         </div>
 
         {selectedTicket && (
@@ -111,7 +175,7 @@ export function Dashboard() {
                     id="status-update"
                     defaultValue={selectedTicket.status}
                     onChange={(e) => handleUpdateStatus(selectedTicket.id, e.target.value as TicketStatus)}
-                    className="p-2 border rounded-md w-full"
+                    className="p-2 border rounded-md w-full bg-white"
                   >
                     <option value="aberto">Aberto</option>
                     <option value="andamento">Em Andamento</option>
@@ -119,7 +183,6 @@ export function Dashboard() {
                   </select>
                 </div>
               </div>
-
               <div className="flex-grow overflow-y-auto p-6">
                   <TicketConversation messages={selectedTicket.messages} />
               </div>
