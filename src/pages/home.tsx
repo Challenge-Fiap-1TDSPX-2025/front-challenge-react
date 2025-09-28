@@ -30,7 +30,7 @@ export function Home() {
                             <p className='text-lg  max-w-[500px] font-medium'>Gerencie tickets de dúvidas e ofereça respostas automáticas com IA para seus pacientes, tudo
                                 em uma única plataforma.</p>
                             <div className="mt-4 md:w-full">
-                                <a href="dashbord.html" className="botoes md:w-full">Entrar
+                                <a href="/login" className="botoes md:w-full">Entrar
                                     <i className="fa-solid fa-arrow-right"></i></a>
                             </div>
                         </div>
@@ -41,7 +41,7 @@ export function Home() {
                 </div>
             </section>
 
-            {/* Seção de Soluções */}
+            
             <section id="solucoes" className="py-20 bg-{#f9fafb}">
                 <div className="conteiner">
                     <div className=" text-center max-w-[700px] mx-auto mb-15">
@@ -51,7 +51,7 @@ export function Home() {
                     </div>
 
                     <div className=" grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6">
-                        {/* Solução 1: Gerenciador de Tickets */}
+                        
                         <CardSolucao
                             cardSolucao={{
                                 imagemUrl: ticket,
@@ -75,7 +75,7 @@ export function Home() {
                 </div>
             </section>
 
-            {/* Seção Como Funciona */}
+            
             <section id="como-funciona" className=" bg-[#add2f7] py-20">
                 <div className="conteiner">
                     <div className="text-center max-w-[700px] mx-auto mb-[60px]">
@@ -84,13 +84,13 @@ export function Home() {
                         <p className='text-[1.125rem] font-medium text-[#31343a]'>Nossa plataforma foi projetada para ser intuitiva e fácil de usar.</p>
                     </div>
 
-                    {/* Gerenciador de Tickets */}
+                    
                     <div id="gerenciador-tickets" className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-20">
                         {/* Conteúdo do texto: sempre à esquerda em md+ */}
                         <div className="conteudo-recurso order-1">
                             <h3 className="text-[1.75rem] font-bold mb-8 text-[#111827]">Gerenciador de Tickets</h3>
 
-                            {/* Passo 1 */}
+                            
                             <div className="flex gap-5 mb-5">
                                 <div className="w-10 h-10 bg-[#4f46e5] text-white rounded-full flex items-center justify-center font-bold shrink-0">1</div>
                                 <div>
@@ -101,7 +101,7 @@ export function Home() {
                                 </div>
                             </div>
 
-                            {/* Passo 2 */}
+                            
                             <div className="flex gap-5 mb-5">
                                 <div className="w-10 h-10 bg-[#4f46e5] text-white rounded-full flex items-center justify-center font-bold shrink-0">2</div>
                                 <div>
@@ -112,7 +112,7 @@ export function Home() {
                                 </div>
                             </div>
 
-                            {/* Passo 3 */}
+                            
                             <div className="flex gap-5">
                                 <div className="w-10 h-10 bg-[#4f46e5] text-white rounded-full flex items-center justify-center font-bold shrink-0">3</div>
                                 <div>
@@ -136,9 +136,9 @@ export function Home() {
 
 
 
-                    {/* Chat IA */}
+                    
                     <div id="chat-ia" className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-20">
-                        {/* Texto: sempre acima da imagem em telas pequenas */}
+                        
                         <div className="conteudo-recurso order-1 md:order-2">
                             <h3 className="text-[1.75rem] font-bold mb-8 text-[#111827]">Chat IA para Pacientes</h3>
                             <div className="passos space-y-5">
@@ -172,7 +172,7 @@ export function Home() {
                             </div>
                         </div>
 
-                        {/* Imagem: sempre abaixo do texto em telas pequenas */}
+                        
                         <div className="imagem-recurso order-2 md:order-1 w-3/5 hidden lg:block mx-auto">
                             <img
                                 src={imagemRecurso2}
