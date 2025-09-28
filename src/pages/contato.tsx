@@ -25,12 +25,6 @@ export function Contato() {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Dados do formulário:', formData);
-    alert('Formulário enviado com sucesso!');
-  };
-
   const handleReset = () => {
     setFormData({
       assunto: '',
@@ -45,6 +39,20 @@ export function Contato() {
       mensagem: '',
       termos: false,
     });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    
+    if (formData.email !== formData.confirmaEmail) {
+      alert("Erro: O E-MAIL e a CONFIRMAÇÃO DO E-MAIL não conferem.");
+      return; 
+    }
+    
+    // **2. Mensagem de Sucesso e Reset:**
+    alert('Mensagem enviada com sucesso!');
+    handleReset(); // 👈 CHAMA A FUNÇÃO PARA LIMPAR O ESTADO
   };
 
   return (
