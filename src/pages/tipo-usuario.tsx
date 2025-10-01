@@ -18,11 +18,11 @@ export function EscolhaPerfil() { // Ou o nome que você deu à sua página
         </p>
 
         <div className="space-y-4">
-          <Button to="/paciente/dashboard" variant="indigo">
+          <Button to="/login/paciente" variant="indigo">
             Sou Paciente
           </Button>
 
-          <Button to="/dashboard" variant="teal">
+          <Button to="/login/atendente" variant="teal">
             Sou Atendente
           </Button>
         </div>
