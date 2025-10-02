@@ -1,69 +1,124 @@
-# React + TypeScript + Vite
+# Sistema de Suporte e Teleconsulta HC
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 📌 Descrição do Projeto
+Este projeto consiste em uma plataforma digital de atendimento para teleconsulta, desenvolvida para otimizar a comunicação entre pacientes e a equipe de suporte da HC. A solução integra chatbot inteligente, criação e gerenciamento de tickets e atendimento humano especializado, proporcionando um fluxo de suporte eficiente, organizado e rastreável.
 
-Currently, two official plugins are available:
+A plataforma permite que os pacientes registrem suas demandas, incluam descrições detalhadas, anexos e informações sobre a etapa do tratamento, e acompanhem o status de seus tickets em tempo real. Para questões simples ou dúvidas frequentes, o chatbot atua como primeira linha de atendimento, oferecendo respostas imediatas e direcionando casos mais complexos para os atendentes humanos, garantindo agilidade e redução da sobrecarga da equipe.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Para os atendentes, o sistema oferece funcionalidades de visualização detalhada de tickets, filtragem por status, pesquisa por nome ou número de protocolo, além de permitir comentários internos e acompanhamento do histórico de interações. Isso aumenta a produtividade, a organização e a capacidade de priorizar casos críticos.
 
-## Expanding the ESLint configuration
+A plataforma foi desenvolvida com foco em usabilidade, desempenho e acessibilidade, suportando dispositivos desktop e mobile, garantindo que pacientes e atendentes possam interagir de forma simples e intuitiva. Com esse sistema, busca-se melhorar a experiência do paciente, agilizar o fluxo de atendimento e assegurar transparência, confiabilidade e segurança em todas as interações.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🛠 Tecnologias Utilizadas
+- **Front-end:** React, Typescript, Tailwind  
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
+
+## 👨‍👩‍👧‍👦 Integrantes do Grupo
+
+- **Guilherme Santos Fonseca** – RM: 564232  
+- **Gustavo Araujo da Silva** – RM: 566526  
+- **Anthony de Souza Henriques** – RM: 566188  
+
+---
+
+## 🖼 Imagens e Ícones
+### Logo
+![Logo](./src/assets/logo-challenge.png) 
+
+### Tela inicial
+![Tela Inicial](./src/assets/pexels-karolina-grabowska-7195310.jpg)  
+
+### Tela inicial
+![Tela Inicial](./src/assets/26601499_85z_2201_w009_n001_95c_p6_95%201.png)  
+
+### Tela inicial
+![Tela Inicial](./src/assets/7709378_3731957%201.png)  
+
+### Tela inicial
+![Tela Inicial](./src/assets/)  
+
+### Tela inicial
+![Tela Inicial](./src/assets/) 
+
+### Chatbot
+![Chatbot](./src/assets/bot.png)  
+
+### Timer
+![Timer](./src/assets/timer.png)  
+
+### Line Chart
+![Line Chart](./src/assets/line-chart.png) 
+
+### Feedback
+![Feedback](./src/assets/line-chart.png)  
+
+### Perfil do Usuario
+![Perfil do Usuario](./src/assets/profile-user.png)  
+
+### Grupo
+![Grupo](./src/assets/group.png)  
+
+### Integrante 1 
+![integrante 1 ](./src/assets/gustavo.jpg)  
+
+### Integrante 2 
+![integrante 2 ](./src/assets/guilherme.jpg)  
+
+### Integrante 3 
+![integrante 3 ](./src/assets/anthony.jpg)  
+
+---
+
+## 📂 Estrutura de Pastas do Projeto
+
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+/assets
+  (imagens utilizadas no projeto)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+/components
+  (componentes utilizados no projeto)
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+/pages
+├── contato.tsx
+├── dashboard.tsx
+└── faq.tsx 
+└── home.tsx 
+└── integrantes.tsx 
+└── login.tsx 
+└── meus-tickets.tsx 
+└── novo-ticket.tsx 
+└── paciente-page.tsx 
+└── tipo-usuario.tsx 
+
+/services
+├── ticket-services.ts
+
+/types
+├── button.ts
+├── card-beneficio.ts
+├── card-depoimento.ts
+├── card-plano.ts
+├── card-solucao.ts
+├── cards-integrantes.ts
+├── form-input.ts
+├── link-rodape.ts
+├── ticket.ts
+
+App.tsx
+Index.css
+
 ```
+
+---
+
+## 🔗 Links Importantes
+- **Repositório no GitHub:** [https://github.com/Challenge-Fiap-1TDSPX-2025/front-challenge-react](https://github.com/Challenge-Fiap-1TDSPX-2025/front-challenge-react)
+
+- **Vídeo Demonstrativo no YouTube:** [https://www.youtube.com/watch?v=seuvideo](https://www.youtube.com/watch?v=seuvideo)  
+
+---
