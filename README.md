@@ -113,6 +113,6 @@ Index.css
 ## 🔗 Links Importantes
 - **Repositório no GitHub:** [https://github.com/Challenge-Fiap-1TDSPX-2025/front-challenge-react](https://github.com/Challenge-Fiap-1TDSPX-2025/front-challenge-react)
 
-- **Vídeo Demonstrativo no YouTube:** [https://www.youtube.com/watch?v=seuvideo](https://www.youtube.com/watch?v=seuvideo)  
+- **Vídeo Demonstrativo no YouTube:** [https://youtu.be/-hlR4JnyWh8](https://youtu.be/-hlR4JnyWh8)  
 
 ---
