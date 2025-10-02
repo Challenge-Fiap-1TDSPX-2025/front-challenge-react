@@ -38,12 +38,6 @@ A plataforma foi desenvolvida com foco em usabilidade, desempenho e acessibilida
 ### Tela inicial
 ![Tela Inicial](./src/assets/7709378_3731957%201.png)  
 
-### Tela inicial
-![Tela Inicial](./src/assets/)  
-
-### Tela inicial
-![Tela Inicial](./src/assets/) 
-
 ### Chatbot
 ![Chatbot](./src/assets/bot.png)  
 
