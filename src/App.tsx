@@ -11,6 +11,7 @@ import { Contato } from './pages/contato';
 import { NovoTicketPage } from './pages/novo-ticket';
 import { MeusTickets } from './pages/meus-tickets';
 import { LoginPage } from './pages/login';
+import { CadastroPage } from './pages/cadastro-paciente';
 
 
 
@@ -21,6 +22,7 @@ function App() {
       <Routes>
         <Route path='/dashboard' element={<Dashboard/>} /> 
         <Route path='/login' element={<EscolhaPerfil/>} />
+        <Route path='/cadastro' element={<CadastroPage/>} />
         <Route path='/paciente/dashboard' element={<PacienteDashboard/>} />
         <Route path='/paciente/tickets/novo' element={<NovoTicketPage/>} />
         <Route path='/paciente/tickets' element={<MeusTickets/>} />
