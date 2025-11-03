@@ -21,9 +21,12 @@ export function Header() {
                     <Link to="/login" className='botoes'>
                         Entrar
                     </Link>
-                    <a href="/login" className="botoes">
+                    <Link to="/cadastro" className='botoes'>
                         Cadastre-se
-                    </a>
+                    </Link>
+
+
+                    
                 </nav>
             </div>
         </header>
