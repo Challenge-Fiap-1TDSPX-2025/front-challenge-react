@@ -30,7 +30,7 @@ export function CadastroPage() {
       endereco:data.endereco
     };
     
-    const SERVER_URL = 'http://localhost:8080/paciente';
+    const SERVER_URL = 'http://localhost:8080/paciente/cadastro';
   
     try {
       const response = await fetch(SERVER_URL, {
