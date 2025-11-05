@@ -9,7 +9,7 @@ export interface FormInputProps {
     label: string;
     id: string;
     name: string;
-    type?: 'text' | 'email' | 'tel' | 'number' | 'password'; 
+    type?: 'text' | 'email' | 'tel' | 'number' | 'password' | 'date'; 
     
     value?: string; 
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;

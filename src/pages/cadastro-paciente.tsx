@@ -1,39 +1,42 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FormInput } from '../components/form-input'; // Seu componente reutilizado
+import { zodResolver } from '@hookform/resolvers/zod';
+import { FormInput } from '../components/form-input';
 import { Link } from 'react-router-dom';
-import type { CadastroFormData } from '../types/cadastro-form';
+import { cadastroSchema, type CadastroFormData } from '../schemas/cadastroSchemas';
 
 export function CadastroPage() {
   const {
-    register, // Função para registrar os inputs
-    handleSubmit, // Wrapper para a função de submissão
-    watch, // Para monitorar o valor de um campo (usado na confirmação de senha)
-    formState: { errors, isSubmitting }, // Para erros e estado de envio
-    reset // Para limpar o formulário
-  } = useForm<CadastroFormData>();
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<CadastroFormData>({
+    resolver: zodResolver(cadastroSchema),
+  });
 
   const [apiError, setApiError] = useState('');
 
   const onSubmit = async (data: CadastroFormData) => {
-    setApiError(''); 
+    setApiError('');
     
     const dataToSend = {
       nome: data.nome,
       email: data.email,
       senha: data.senha,
-      
+      cpf:data.cpf,
+      rg:data.rg,
+      dataNascimento:data.dataNascimento,
+      endereco:data.endereco
     };
     
-    const SERVER_URL = 'http://localhost:8080/paciente'; 
+    const SERVER_URL = 'http://localhost:8080/paciente';
   
     try {
       const response = await fetch(SERVER_URL, {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json' 
-        },
-        body: JSON.stringify(dataToSend), 
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataToSend),
       });
   
       if (!response.ok) {
@@ -41,35 +44,15 @@ export function CadastroPage() {
         throw new Error(errorData.message || 'Erro: Ocorreu um problema no servidor.');
       }
   
-      // Sucesso:
-      console.log('Cadastro de Paciente realizado com sucesso!');
-      alert('Cadastro de Paciente realizado com sucesso! Redirecionando para login.');
-      reset(); 
-      // Ex: Se você usar `useNavigate` do react-router-dom: navigate('/login');
-  
+      alert('Cadastro de Paciente realizado com sucesso!');
+      reset();
     } catch (error) {
-        
-        let errorMessage = 'Ocorreu um erro inesperado na comunicação.';
-  
-        // Verifica se o erro é uma instância de Error e usa sua mensagem
-        if (error instanceof Error) {
-          errorMessage = error.message;
-        } 
-        // Opcional: Se for um objeto com uma propriedade 'message' (comum em erros de API)
-        else if (typeof error === 'object' && error !== null && 'message' in error) {
-           errorMessage = (error as { message: string }).message;
-        }
-        // Opcional: Se for uma string
-        else if (typeof error === 'string') {
-            errorMessage = error;
-        }
-  
-        setApiError(errorMessage);
-        console.error('Erro de API:', error);
-      }
+      let errorMessage = 'Ocorreu um erro inesperado na comunicação.';
+      if (error instanceof Error) errorMessage = error.message;
+      setApiError(errorMessage);
+      console.error('Erro de API:', error);
+    }
   };
-  // Observa o campo de senha para validação
-  const senha = watch('senha', ''); 
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
@@ -78,69 +61,47 @@ export function CadastroPage() {
           Crie sua Conta
         </h2>
 
-        {/* 4. Conecte o formulário com o handleSubmit */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          
-          {/* Input: Nome Completo */}
-          <FormInput
-            label="Nome Completo"
-            id="nome"
-            {...register('nome', { required: 'Nome é obrigatório' })} 
-            error={errors.nome} 
-            />
+          <FormInput label="Nome Completo" id="nome" {...register('nome')} error={errors.nome} />
           {errors.nome && <p className="text-red-500 text-sm mt-1">{errors.nome.message}</p>}
 
-        {/* Input: Email (CORRIGIDO) */}
-        <FormInput
-            label="Email"
-            id="email"
-            type="email"
-            {...register('email', { // O nome 'email' já está aqui!
-                required: 'Email é obrigatório',
-                pattern: {
-                value: /^\S+@\S+$/i,
-                message: 'Formato de email inválido'
-            }
-        })}
-        error={errors.email}
-        />
-        {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
+          <FormInput label="CPF" id="cpf" {...register('cpf')} error={errors.cpf} />
+          {errors.cpf && <p className="text-red-500 text-sm mt-1">{errors.cpf.message}</p>}
 
-        {/* Input: Senha (CORRIGIDO) */}
-        <FormInput
-            label="Senha"
-            id="senha"
-            type="text" // Use type='password' em produção
-            {...register('senha', { // O nome 'senha' já está aqui!
-            required: 'Senha é obrigatória',
-            minLength: { value: 6, message: 'Mínimo de 6 caracteres' } 
-            })}
-            error={errors.senha}
-            />
-            {errors.senha && <p className="text-red-500 text-sm mt-1">{errors.senha.message}</p>}
+          <FormInput label="RG" id="rg" {...register('rg')} error={errors.rg} />
+          {errors.rg && <p className="text-red-500 text-sm mt-1">{errors.rg.message}</p>}
 
-          {/* Input: Confirmar Senha */}
           <FormInput
-            label="Confirmar Senha"
-            id="confirmarSenha"
-            type="text"
-            {...register('confirmarSenha', { 
-              required: 'Confirmação é obrigatória',
-              validate: (value) => value === senha || 'As senhas não conferem'
-            })}
+            label="Data de Nascimento"
+            id="dataNascimento"
+            type="date"
+            {...register("dataNascimento")}
+            error={errors.dataNascimento}
           />
+          {errors.dataNascimento && (
+            <p className="text-red-500 text-sm mt-1">{errors.dataNascimento.message}</p>
+          )}
+
+          <FormInput label="Endereço" id="endereco" {...register('endereco')} error={errors.endereco} />
+          {errors.endereco && <p className="text-red-500 text-sm mt-1">{errors.endereco.message}</p>}
+
+          <FormInput label="Email" id="email" type="email" {...register('email')} error={errors.email} />
+          {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
+
+          <FormInput label="Senha" id="senha" type="password" {...register('senha')} error={errors.senha} />
+          {errors.senha && <p className="text-red-500 text-sm mt-1">{errors.senha.message}</p>}
+
+          <FormInput label="Confirmar Senha" id="confirmarSenha" type="password" {...register('confirmarSenha')} error={errors.confirmarSenha} />
           {errors.confirmarSenha && <p className="text-red-500 text-sm mt-1">{errors.confirmarSenha.message}</p>}
 
-          {/* Erro de API */}
           {apiError && <div className="text-red-600 p-2 bg-red-100 rounded-md text-sm">{apiError}</div>}
 
-          {/* Botão de Submissão */}
           <button
             type="submit"
             disabled={isSubmitting}
             className={`w-full py-3 rounded-lg font-bold transition-colors ${
-              isSubmitting 
-                ? 'bg-indigo-400 cursor-not-allowed' 
+              isSubmitting
+                ? 'bg-indigo-400 cursor-not-allowed'
                 : 'bg-indigo-600 hover:bg-indigo-700 text-white'
             }`}
           >
