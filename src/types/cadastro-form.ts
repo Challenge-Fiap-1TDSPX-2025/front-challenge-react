@@ -3,4 +3,8 @@ export interface CadastroFormData {
     email: string;
     senha: string;
     confirmarSenha: string;
+    cpf:string;
+    rg:string;
+    dataNascimento:string;
+    endereco:string;
   }
