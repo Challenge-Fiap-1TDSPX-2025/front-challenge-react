@@ -33,6 +33,7 @@ export function CadastroPage() {
       enderecoPaciente: data.endereco,
     };
 
+
     // Ajuste a URL base conforme necessário
     const SERVER_URL = 'http://localhost:8080/paciente/cadastro';
 
