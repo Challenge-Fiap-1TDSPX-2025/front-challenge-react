@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormInput } from '../components/form-input';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { cadastroSchema, type CadastroFormData } from '../schemas/cadastroSchemas';
 
 export function CadastroPage() {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -19,35 +21,50 @@ export function CadastroPage() {
 
   const onSubmit = async (data: CadastroFormData) => {
     setApiError('');
-    
+
+    // CORREÇÃO CRÍTICA: Mapeia os campos do frontend (camelCase) para os nomes esperados pelo DTO Java (snake_case/paciente_sufixo).
     const dataToSend = {
-      nome: data.nome,
+      nomePaciente: data.nome,
       email: data.email,
       senha: data.senha,
-      cpf:data.cpf,
-      rg:data.rg,
-      dataNascimento:data.dataNascimento,
-      endereco:data.endereco
+      cpfPaciente: data.cpf,
+      rgPaciente: data.rg,
+      dataNascimentoPaciente: data.dataNascimento,
+      enderecoPaciente: data.endereco,
     };
-    
+
+
+    // Ajuste a URL base conforme necessário
     const SERVER_URL = 'http://localhost:8080/paciente/cadastro';
-  
+
     try {
       const response = await fetch(SERVER_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dataToSend),
       });
-  
+
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: `Erro ${response.status} ao cadastrar.` }));
-        throw new Error(errorData.message || 'Erro: Ocorreu um problema no servidor.');
+        // Tenta capturar a mensagem de erro detalhada do servidor
+        const errorText = await response.text();
+        let errorMessage = `Erro ${response.status} no servidor.`;
+        try {
+          // Se o servidor retornar JSON (e não HTML de erro)
+          const errorJson = JSON.parse(errorText);
+          errorMessage = errorJson.mensagem || errorMessage;
+        } catch {
+          // Se não for JSON, mantém a mensagem genérica
+        }
+
+        throw new Error(errorMessage);
       }
-  
-      alert('Cadastro de Paciente realizado com sucesso!');
+
+      alert('Cadastro de Paciente realizado com sucesso! Você será redirecionado para o login.');
       reset();
+      navigate('/login/paciente'); // Redireciona para o login do paciente após sucesso
     } catch (error) {
-      let errorMessage = 'Ocorreu um erro inesperado na comunicação.';
+      // Trata o erro de comunicação ou o erro capturado pelo throw new Error
+      let errorMessage = 'Ocorreu um problema no servidor. Verifique se o CPF/RG já estão cadastrados.';
       if (error instanceof Error) errorMessage = error.message;
       setApiError(errorMessage);
       console.error('Erro de API:', error);
@@ -99,11 +116,10 @@ export function CadastroPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`w-full py-3 rounded-lg font-bold transition-colors ${
-              isSubmitting
+            className={`w-full py-3 rounded-lg font-bold transition-colors ${isSubmitting
                 ? 'bg-indigo-400 cursor-not-allowed'
                 : 'bg-indigo-600 hover:bg-indigo-700 text-white'
-            }`}
+              }`}
           >
             {isSubmitting ? 'Cadastrando...' : 'Cadastrar'}
           </button>
