@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Sidebar from "../components/side-bar";
 import { Ticket } from "../components/ticket";
 import type { StoredTicket, TicketStatus, TicketFilter, ProblemType, Message } from "../types/ticket";
@@ -70,13 +70,7 @@ export function Dashboard() {
       andamento: 0,
       resolvido: 0,
     };
-    const statusMap: Record<string, TicketStatus> = {
-        'aberto': 'aberto',
-        'em aberto': 'aberto',
-        'andamento': 'andamento',
-        'em andamento': 'andamento',
-        'resolvido': 'resolvido',
-    };
+    
     
     allTickets.forEach(ticket => {
       const rawStatus = (ticket.status || '').toLowerCase().trim(); 

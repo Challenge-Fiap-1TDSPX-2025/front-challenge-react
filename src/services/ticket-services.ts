@@ -1,7 +1,24 @@
 import type { CreateTicketPayload, StoredTicket, ProblemType} from '../types/ticket'; 
 
-const API_BASE_URL = 'http://localhost:8080/tickets/novo'; 
-const API_BASE_URL_TICKETS = 'http://localhost:8080/tickets';
+interface RawMessageData {
+  author: string;
+  text: string;
+  timestamp: string;
+}
+
+interface RawTicketData {
+  id: number;
+  title: string;
+  status: string;
+  data: string;
+  idTipoProblema: number;
+  idPaciente: number;
+  messages: RawMessageData[];
+  arquivos: string[];
+}
+
+const API_BASE_URL = 'https://health-support-java.onrender.com/tickets/novo'; 
+const API_BASE_URL_TICKETS = 'https://health-support-java.onrender.com/tickets';
 
 export const saveTicket = async (newTicketData: CreateTicketPayload) => {
 
@@ -63,7 +80,7 @@ export const fetchAllTickets = async (): Promise<StoredTicket[]> => {
     throw new Error(errorBody.mensagem || `Falha HTTP: ${response.status} ${response.statusText}`);
   }
 
-  const data: any[] = await response.json();
+  const data: RawTicketData[] = await response.json();
   
   return data.map(item => {
     const normalizedStatus = item.status
@@ -78,14 +95,14 @@ export const fetchAllTickets = async (): Promise<StoredTicket[]> => {
       data: new Date(item.data).toISOString(),
       problemType: mapIdToProblemType(item.idTipoProblema), 
       idPaciente: item.idPaciente,
-      messages: item.messages.map((msg: any) => ({
-        author: msg.author,
+      messages: item.messages.map((msg) => ({
+        author: msg.author as 'paciente' | 'atendente',
         text: msg.text,
         timestamp: msg.timestamp,
       })),
       arquivos: item.arquivos,
     };
-  }) as StoredTicket[]; 
+  }); 
 };
 
 
@@ -107,7 +124,7 @@ export const fetchTicketsByPatient = async (idPaciente: number): Promise<StoredT
     throw new Error(errorBody.mensagem || `Falha HTTP: ${response.status} ${response.statusText}`);
   }
 
-  const data: any[] = await response.json();
+  const data: RawTicketData[] = await response.json();
 
 
   
@@ -124,14 +141,14 @@ export const fetchTicketsByPatient = async (idPaciente: number): Promise<StoredT
       data: new Date(item.data).toISOString(),
       problemType: mapIdToProblemType(item.idTipoProblema), 
       idPaciente: idPaciente,
-      messages: item.messages.map((msg: any) => ({
-        author: msg.author,
+      messages: item.messages.map((msg) => ({
+        author: msg.author as 'paciente' | 'atendente',
         text: msg.text,
         timestamp: msg.timestamp,
       })),
       arquivos: item.arquivos,
     };
-  }) as StoredTicket[]; 
+  });
 };
 
 

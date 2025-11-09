@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
 import { CardPerguntas } from './card-perguntas';
-import { CtaSection } from './cta-section'; 
+import { useState } from 'react';
 
 const faqData = [
   {

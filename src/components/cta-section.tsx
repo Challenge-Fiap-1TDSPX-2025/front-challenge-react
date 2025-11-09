@@ -1,8 +1,6 @@
-import React from 'react';
 
 export function CtaSection() {
   return (
-    // Esta é a sua antiga div "contato-faq"
     <div className="text-center mt-12 p-8 bg-blue-100/50 rounded-lg">
       <h3 className="text-2xl font-bold text-slate-800">
         Não encontrou o que procurava?

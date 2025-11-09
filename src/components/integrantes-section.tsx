@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { CardIntegrante } from './card-integrantes';
 
 import gustavoPhoto from '../assets/gustavo.jpg';

@@ -1,5 +1,3 @@
-// src/types/index.ts
-
 export type CardValorProps = {
   iconSrc: string;
   iconAlt: string;
@@ -7,7 +5,6 @@ export type CardValorProps = {
   description: string;
 };
 
-// Você pode adicionar outros tipos compartilhados aqui no futuro!
 export type CardIntegranteProps = {
   photoSrc: string;
   photoAlt: string;

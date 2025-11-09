@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormInput } from '../components/form-input';
 import { Link, useNavigate } from 'react-router-dom';
 import { cadastroSchema, type CadastroFormData } from '../schemas/cadastroSchemas';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://health-support-java.onrender.com';
 
 export function CadastroPage() {
   const navigate = useNavigate();
@@ -22,7 +24,6 @@ export function CadastroPage() {
   const onSubmit = async (data: CadastroFormData) => {
     setApiError('');
     
-    // CORREÇÃO CRÍTICA: Mapeia os campos do frontend (camelCase) para os nomes esperados pelo DTO Java (snake_case/paciente_sufixo).
     const dataToSend = {
       nome_paciente: data.nome,
       email: data.email,
@@ -33,8 +34,7 @@ export function CadastroPage() {
       endereco_paciente: data.endereco,
     };
     
-    // Ajuste a URL base conforme necessário
-    const SERVER_URL = 'http://localhost:8080/paciente/cadastro';
+    const SERVER_URL = `${API_BASE_URL}/paciente/cadastro`;
   
     try {
       const response = await fetch(SERVER_URL, {
