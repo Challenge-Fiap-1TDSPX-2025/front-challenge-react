@@ -12,6 +12,7 @@ import { NovoTicketPage } from './pages/novo-ticket';
 import { MeusTickets } from './pages/meus-tickets';
 import { LoginPage } from './pages/login';
 import { CadastroPage } from './pages/cadastro-paciente';
+import { AuthProvider } from './components/auth-context';
 
 
 
@@ -19,7 +20,8 @@ function App() {
   
   return (
     <Router>
-      <Routes>
+      <AuthProvider>
+        <Routes>
         <Route path='/dashboard' element={<Dashboard/>} /> 
         <Route path='/login' element={<EscolhaPerfil/>} />
         <Route path='/cadastro' element={<CadastroPage/>} />
@@ -34,6 +36,8 @@ function App() {
           <Route path='/contato' element={<Contato/>}/>
         </Route>
       </Routes>
+      </AuthProvider>
+      
     </Router>
   )
 } 

@@ -3,8 +3,15 @@ import group from '../assets/group.png'
 import ticket from '../assets/ticket.png'
 import settings from '../assets/settings.png'
 import { Link } from 'react-router-dom'
+import { useAuth } from './auth-context-core'
 
 export default function Sidebar() {
+    const { atendente } = useAuth(); // Obter dados do atendente
+
+    
+    const nomeAtendente = atendente?.nome || 'Usuário Desconhecido';
+    const emailAtendente = atendente?.login || 'email.nao.encontrado';
+
     return (
         <aside className="w-72 bg-gray text-gray-900 h-screen overflow-y-auto flex-shrink-0 flex flex-col border-r border-gray-900">
             <div className="flex items-center gap-2 p-6 border-b border-gray-300 font-bold text-indigo-700 text-xl justify-center">
@@ -16,11 +23,12 @@ export default function Sidebar() {
                     <img src={profileUser} alt="icone representando uma imagem de uma pessoa" className="w-full" />
                 </div>
                 <div>
-                    <h3 className="text-base font-medium text-gray-800 mb-0.5">Carlos Silva</h3>
-                    <p className="text-xs text-gray-600">carlos.silva@empresa.com</p>
+                    
+                    <h3 className="text-base font-medium text-gray-800 mb-0.5">{nomeAtendente}</h3>
+                    
+                    <p className="text-xs text-gray-600">{emailAtendente}</p>
                 </div>
             </div>
-
             <nav className="flex-1">
                 <ul className="flex flex-col p-2">
                     <li className="flex items-center gap-3 px-5 py-3 text-gray-600 hover:bg-indigo-600 hover:text-white rounded cursor-pointer">

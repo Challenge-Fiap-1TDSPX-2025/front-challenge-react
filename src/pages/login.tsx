@@ -4,15 +4,16 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormInput } from '../components/form-input'; 
 import { loginSchema, type LoginFormData } from '../schemas/loginSchemas'
-
+import { useAuth } from '../components/auth-context-core'; 
+import type { AtendenteData } from '../types/auth-types';
 
 const API_BASE_URL = 'http://localhost:8080';
 
 export function LoginPage() {
   const navigate = useNavigate();
   const { userType } = useParams<{ userType: 'paciente' | 'atendente' }>();
+  const { login } = useAuth(); 
 
-  
   const {
     register,
     handleSubmit,
@@ -26,11 +27,9 @@ export function LoginPage() {
 
   const getLoginEndpoint = (type: string | undefined) => {
     if (type === 'paciente') {
-    
       return `${API_BASE_URL}/login/paciente/autenticar`;
     }
     if (type === 'atendente') {
-
       return `${API_BASE_URL}/login/atendente/autenticar`;
     }
     return '';
@@ -40,7 +39,6 @@ export function LoginPage() {
   const onSubmit = async (data: LoginFormData) => {
     setApiError('');
     const loginUrl = getLoginEndpoint(userType);
-
     if (!loginUrl) {
       setApiError('Erro: Tipo de usuário não reconhecido na URL.');
       return;
@@ -62,9 +60,20 @@ export function LoginPage() {
 
       if (response.ok) {
         const userData = await response.json();
+        
+        if (userType === 'paciente') {
+            
+            const pacienteData = { id: userData.id, nome: userData.nome };
+            login(pacienteData, 'paciente'); // Salva o paciente logado 
+        } else if (userType === 'atendente') {
+          // Salva os dados do atendente
+          const atendenteData: AtendenteData = { id: userData.id, nome: userData.nome, login: userData.login };
+          login(atendenteData, 'atendente'); // Salva o atendente logado 
+      }
+        
         alert(`Login de ${userType?.toUpperCase()} bem-sucedido!`);
         
-        // 3. Redirecionamento para o Dashboard correto
+        // Redirecionamento para o Dashboard correto
         const dashboardPath = userType === 'paciente' ? '/paciente/dashboard' : '/dashboard';
         navigate(dashboardPath);
         

@@ -1,62 +1,202 @@
-// src/services/ticketService.ts
+import type { CreateTicketPayload, StoredTicket, ProblemType} from '../types/ticket'; 
 
-import type { Ticket, StoredTicket, Message, TicketStatus } from '../types/ticket';
+const API_BASE_URL = 'http://localhost:8080/tickets/novo'; 
+const API_BASE_URL_TICKETS = 'http://localhost:8080/tickets';
 
-const TICKETS_KEY = 'healthsupport_tickets';
+export const saveTicket = async (newTicketData: CreateTicketPayload) => {
 
-export const getTickets = (): StoredTicket[] => {
-  const ticketsJson = localStorage.getItem(TICKETS_KEY);
-  if (ticketsJson) {
-    return JSON.parse(ticketsJson);
+  const response = await fetch(API_BASE_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(newTicketData), 
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.json().catch(() => ({ message: 'Erro desconhecido na API' }));
+    
+    throw new Error(errorBody.message || `Falha HTTP: ${response.status} ${response.statusText}`);
   }
-  return [];
+
+  const isNoContent = response.status === 204 || response.headers.get('content-length') === '0';
+
+    if (isNoContent) {
+        return {}; // Retorna um objeto vazio em vez de tentar ler JSON
+    }
+
+
+  return response.json(); 
 };
 
-export const saveTicket = (newTicketData: Omit<Ticket, 'id' | 'data' | 'status' | 'messages'> & { description: string }) => {
-  const tickets: StoredTicket[] = getTickets();
+
+const mapIdToProblemType = (id: number): ProblemType => {
+  if (id === 1) return 'agendamento-nova-consulta'; 
+  if (id === 2) return 'cancelamento-reagendamento'; 
+  if (id === 3) return 'duvidas-medicamentos';
+  if (id === 4) return 'resultados-exames';
+  if (id === 5) return 'problema-tecnico';
+  if (id === 6) return 'solicitacao-documento';
+  if (id === 7) return 'reclamacao-atendimento';
+  if (id === 8) return 'duvida-pagamento';
+  if (id === 9) return 'atualizacao-dados';
+  if (id === 10) return 'historico-medico';
+  return 'outro'; 
+};
+
+
+
+export const fetchAllTickets = async (): Promise<StoredTicket[]> => {
+  const response = await fetch(API_BASE_URL_TICKETS, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (response.status === 204) {
+      return [];
+  }
   
-  const firstMessage: Message = {
-    author: 'paciente',
-    text: newTicketData.description,
-    timestamp: new Date().toISOString(),
-  };
+  if (!response.ok) {
+    const errorBody = await response.json().catch(() => ({ mensagem: 'Erro desconhecido na API ao buscar todos os tickets' }));
+    throw new Error(errorBody.mensagem || `Falha HTTP: ${response.status} ${response.statusText}`);
+  }
 
-  const ticketToStore: StoredTicket = {
-    id: Date.now(),
-    data: new Date().toISOString(),
-    status: 'aberto',
-    title: newTicketData.title,
-    problemType: newTicketData.problemType,
-    messages: [firstMessage], // A descrição vira a primeira mensagem
-    arquivos: newTicketData.arquivos.map(file => file.name), 
-  };
-
-  tickets.push(ticketToStore);
-  localStorage.setItem(TICKETS_KEY, JSON.stringify(tickets));
+  const data: any[] = await response.json();
+  
+  return data.map(item => {
+    const normalizedStatus = item.status
+      .toLowerCase()
+      .replace('em ', '') 
+      .trim() as StoredTicket['status']; 
+      
+    return {
+      id: item.id,
+      title: item.title,
+      status: normalizedStatus, 
+      data: new Date(item.data).toISOString(),
+      problemType: mapIdToProblemType(item.idTipoProblema), 
+      idPaciente: item.idPaciente,
+      messages: item.messages.map((msg: any) => ({
+        author: msg.author,
+        text: msg.text,
+        timestamp: msg.timestamp,
+      })),
+      arquivos: item.arquivos,
+    };
+  }) as StoredTicket[]; 
 };
 
-// 👇 NOVA FUNÇÃO PARA ADICIONAR MENSAGENS 👇
-export const addMessageToTicket = (ticketId: number, message: Message) => {
-  const tickets = getTickets();
-  const ticketIndex = tickets.findIndex(t => t.id === ticketId);
 
-  if (ticketIndex !== -1) {
-    tickets[ticketIndex].messages.push(message);
-    localStorage.setItem(TICKETS_KEY, JSON.stringify(tickets));
+
+export const fetchTicketsByPatient = async (idPaciente: number): Promise<StoredTicket[]> => {
+  const response = await fetch(`${API_BASE_URL_TICKETS}/paciente/${idPaciente}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (response.status === 204) {
+      return [];
+  }
+  
+  if (!response.ok) {
+    const errorBody = await response.json().catch(() => ({ mensagem: 'Erro desconhecido na API ao buscar tickets' }));
+    throw new Error(errorBody.mensagem || `Falha HTTP: ${response.status} ${response.statusText}`);
+  }
+
+  const data: any[] = await response.json();
+
+
+  
+  return data.map(item => {
+    const normalizedStatus = item.status
+      .toLowerCase()
+      .replace('em ', '') 
+      .trim() as StoredTicket['status']; 
+      
+    return {
+      id: item.id,
+      title: item.title,
+      status: normalizedStatus, // Usa o status corrigido
+      data: new Date(item.data).toISOString(),
+      problemType: mapIdToProblemType(item.idTipoProblema), 
+      idPaciente: idPaciente,
+      messages: item.messages.map((msg: any) => ({
+        author: msg.author,
+        text: msg.text,
+        timestamp: msg.timestamp,
+      })),
+      arquivos: item.arquivos,
+    };
+  }) as StoredTicket[]; 
+};
+
+
+
+export const updateTicketStatus = async (idTicket: number, newStatus: string): Promise<void> => {
+  const response = await fetch(`${API_BASE_URL_TICKETS}/${idTicket}/status`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: newStatus }),
+  });
+
+  if (!response.ok) {
+      let errorMessage = `Falha ao atualizar status do ticket ${idTicket}.`;
+      try {
+          const errorBody = await response.json();
+          errorMessage = errorBody.mensagem || errorMessage;
+      } catch {
+          errorMessage = `${errorMessage} Status: ${response.status}`;
+      }
+      throw new Error(errorMessage);
   }
 };
 
-export const deleteTicket = (ticketId: number) => {
-  let tickets: StoredTicket[] = getTickets();
-  tickets = tickets.filter(ticket => ticket.id !== ticketId);
-  localStorage.setItem(TICKETS_KEY, JSON.stringify(tickets));
-};
-export const updateTicketStatus = (ticketId: number, newStatus: TicketStatus) => {
-  const tickets = getTickets();
-  const ticketIndex = tickets.findIndex(ticket => ticket.id === ticketId);
 
-  if (ticketIndex !== -1) {
-    tickets[ticketIndex].status = newStatus;
-    localStorage.setItem(TICKETS_KEY, JSON.stringify(tickets));
+interface AttendantReplyPayload {
+    idAtendente: number;
+    conteudoConversa: string;
+    novoStatus?: string; // Opcional
+}
+
+
+export const sendAttendantReply = async (idTicket: number, payload: AttendantReplyPayload): Promise<void> => {
+  const response = await fetch(`${API_BASE_URL_TICKETS}/${idTicket}/resposta`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload), 
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.json().catch(() => ({ mensagem: 'Erro desconhecido na API ao enviar resposta' }));
+    
+    throw new Error(errorBody.mensagem || `Falha HTTP: ${response.status} ${response.statusText}`);
   }
 };
+
+
+
+// Deletar
+export const deleteTicketById = async (idTicket: number): Promise<void> => {
+  const response = await fetch(`${API_BASE_URL_TICKETS}/${idTicket}`, {
+      method: 'DELETE',
+  });
+
+  if (!response.ok) {
+      let errorMessage = `Falha ao deletar ticket ${idTicket}.`;
+      try {
+          const errorBody = await response.json();
+          errorMessage = errorBody.mensagem || errorMessage;
+      } catch {
+          errorMessage = `${errorMessage} Status: ${response.status}`;
+      }
+      throw new Error(errorMessage);
+  }
+};
+
+
