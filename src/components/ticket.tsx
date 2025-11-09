@@ -5,6 +5,10 @@ type TicketComponentProps = {
   onDelete: (id: number) => void;
 };
 
+const isValidStatus = (status: string): status is TicketStatus => {
+  return ['aberto', 'andamento', 'resolvido'].includes(status);
+};
+
 export function Ticket({ ticket, onDelete }: TicketComponentProps) {
   const statusStyles: Record<TicketStatus, { bg: string; text: string; label: string }> = {
     aberto: { bg: 'bg-red-100', text: 'text-red-800', label: 'Aberto' },
@@ -13,20 +17,31 @@ export function Ticket({ ticket, onDelete }: TicketComponentProps) {
   };
 
   const problemTypeLabels: Record<ProblemType, string> = {
-    'agendamento-consulta': 'Agendamento de consulta',
+    'agendamento-nova-consulta': 'Agendamento/Reagendamento',
     'duvidas-medicamentos': 'Dúvidas sobre medicamentos',
     'resultados-exames': 'Resultados de exames',
-    'sintomas-mal-estar': 'Relatar sintomas / mal-estar',
+    'cancelamento-reagendamento': 'Cancelamento/Reagendamento',
+    'problema-tecnico': 'Problema técnico com login', 
+    'solicitacao-documento': 'Solicitação de documento', 
+    'reclamacao-atendimento': 'Reclamação de atendimento', 
+    'duvida-pagamento': 'Dúvida sobre convênio/pagamento', 
+    'atualizacao-dados': 'Atualização de dados', 
+    'historico-medico': 'Acesso à histórico médico', 
     'outro': 'Outro',
   };
 
   
-const firstMessage = (ticket.messages && ticket.messages[0]) 
+  const firstMessage = (ticket.messages && ticket.messages.length > 0) 
   ? ticket.messages[0].text 
-  : (ticket as any).description || 'Nenhuma descrição.';
-  const currentStatus = statusStyles[ticket.status];
-  const currentProblemTypeLabel = problemTypeLabels[ticket.problemType];
+  : ticket.title || 'Nenhuma descrição.';
 
+  const validatedStatus: TicketStatus = isValidStatus(ticket.status) 
+    ? ticket.status 
+    : 'aberto'; 
+
+  const currentStatus = statusStyles[validatedStatus]; 
+  const currentProblemTypeLabel = problemTypeLabels[ticket.problemType];
+  
   return (
     <div className="bg-white shadow p-4 rounded-md border relative">
       <button 

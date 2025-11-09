@@ -1,33 +1,95 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { saveTicket } from '../services/ticket-services';
+import { saveTicket } from '../services/ticket-services'; 
 import { FormInput } from '../components/form-input';
-import type { ProblemType } from '../types/ticket';
+import { useAuth } from '../components/auth-context-core'; 
 
 export function NovoTicketPage() {
+  const { paciente, isLoggedIn } = useAuth(); 
+  
+  // Estados para os campos do formulário
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [attachments, setAttachments] = useState<File[]>([]);
-  const [problemType, setProblemType] = useState<ProblemType>('agendamento-consulta');
+  
+  const [problemTypeId, setProblemTypeId] = useState<string>('1'); 
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [apiError, setApiError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const problemOptions = [
+    { value: 1, label: 'Agendamento de nova consulta' }, 
+    { value: 2, label: 'Cancelamento ou reagendamento' },
+    { value: 3, label: 'Dúvidas sobre medicamentos/receita' },
+    { value: 4, label: 'Informações de Resultados de exames' },
+    { value: 5, label: 'Problema técnico com login' },
+    { value: 6, label: 'Solicitação de declaração/atestado' },
+    { value: 7, label: 'Reclamação de atendimento médico' },
+    { value: 8, label: 'Dúvida sobre convênio/pagamento' },
+    { value: 9, label: 'Atualização de dados cadastrais' },
+    { value: 10, label: 'Acesso à histórico médico' },
+    { value: 11, label: 'Outro' },
+  ];
+
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setApiError('');
+
+    
+    if (!isLoggedIn || !paciente || paciente.id <= 0) {
+        setApiError('Erro: Você precisa estar logado como paciente para criar um ticket.');
+        return;
+    }
+
+    // Validação básica do frontend
     if (!title || !description) {
-      alert('Por favor, preencha o título e a descrição.');
+      setApiError('Por favor, preencha o título e a descrição.');
       return;
     }
-    saveTicket({ title, description, problemType, arquivos: attachments });
-    
-    alert('Ticket criado com sucesso!');
-    navigate('/paciente/tickets');
+
+    setIsSubmitting(true);
+
+    try {
+      await saveTicket({ 
+        idPaciente: paciente.id,
+        // Conversão para inteiro (number) antes de enviar para a API
+        idTipoProblema: parseInt(problemTypeId, 10), 
+        nomeConversa: title,             
+        conteudoConversa: description,         
+    });
+        
+        alert('Ticket criado com sucesso! Você será redirecionado.');
+        navigate('/paciente/tickets'); // Redireciona para a lista de tickets após sucesso
+
+    } catch (error) {
+        // Exibe o erro retornado pelo service/API
+        const errorMessage = error instanceof Error ? error.message : 'Falha desconhecida ao criar o ticket.';
+        setApiError(errorMessage);
+        console.error('Erro no envio do ticket:', error);
+
+    } finally {
+        setIsSubmitting(false);
+    }
   };
+
+  // Se não estiver logado, exibe uma mensagem ou redireciona
+  if (!isLoggedIn) {
+    return (
+        <div className="flex justify-center items-center min-h-screen bg-sky-50 p-4">
+            <p className="text-xl text-red-600">Acesso negado. Por favor, <Link to="/login/paciente" className="underline">faça login</Link> como paciente.</p>
+        </div>
+    );
+  }
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-sky-50 p-4">
       <div className="w-full max-w-2xl bg-white p-8 rounded-lg shadow-xl">
         <h1 className="text-3xl font-bold text-gray-800 mb-6">Criar Novo Ticket</h1>
+        
         <form onSubmit={handleSubmit} className="space-y-6">
+          
+          {/* TÍTULO DO PROBLEMA (nomeConversa) */}
           <FormInput
             label="Título do Problema"
             id="title"
@@ -37,23 +99,28 @@ export function NovoTicketPage() {
             required={true}
             maxLength={100}
           />
+          
+          {/* TIPO DE PROBLEMA (id_tipo_problema) */}
           <div>
             <label htmlFor="problemType" className="block text-gray-700 text-sm font-bold mb-2">
               Tipo de Problema
             </label>
             <select
               id="problemType"
-              value={problemType}
-              onChange={(e) => setProblemType(e.target.value as ProblemType)}
+              value={problemTypeId} // Usa o estado string do ID
+              onChange={(e) => setProblemTypeId(e.target.value)} // Seta o ID como string
               className="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
-              <option value="agendamento-consulta">Agendamento de consulta</option>
-              <option value="duvidas-medicamentos">Dúvidas sobre medicamentos</option>
-              <option value="resultados-exames">Resultados de exames</option>
-              <option value="sintomas-mal-estar">Relatar sintomas / mal-estar</option>
-              <option value="outro">Outro</option>
+              {problemOptions.map(option => (
+                // Value do option é o ID (convertido para string)
+                <option key={option.value} value={String(option.value)}>
+                  {option.label}
+                </option>
+              ))}
             </select>
           </div>
+          
+          {/* DESCRIÇÃO DO PROBLEMA (conteudoConversa) */}
           <div>
             <label htmlFor="description" className="block text-gray-700 text-sm font-bold mb-2">
               Descreva o Problema em Detalhes
@@ -64,8 +131,11 @@ export function NovoTicketPage() {
               onChange={(e) => setDescription(e.target.value)}
               className="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500 h-32"
               placeholder="Descreva com o máximo de detalhes o que está acontecendo..."
+              required
             />
           </div>
+          
+          {/* ANEXOS */}
            <div>
             <label htmlFor="attachments" className="block text-gray-700 text-sm font-bold mb-2">
               Anexos (JPG, PNG, PDF)
@@ -89,6 +159,15 @@ export function NovoTicketPage() {
                 : 'Nenhum arquivo selecionado'}
             </div>
           </div>
+
+          {/* Mensagem de Erro da API */}
+          {apiError && (
+              <div className="text-red-600 p-3 bg-red-100 rounded-lg text-sm border border-red-300">
+                  {apiError}
+              </div>
+          )}
+
+          {/* Botões de Ação */}
           <div className="flex items-center justify-end gap-4">
             <Link
               to="/paciente/dashboard"
@@ -98,9 +177,12 @@ export function NovoTicketPage() {
             </Link>
             <button
               type="submit"
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-full focus:outline-none focus:shadow-outline"
+              disabled={isSubmitting}
+              className={`bg-indigo-600 text-white font-bold py-2 px-6 rounded-full focus:outline-none focus:shadow-outline transition-colors ${
+                isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-indigo-700'
+              }`}
             >
-              Enviar Ticket
+              {isSubmitting ? 'Enviando...' : 'Enviar Ticket'}
             </button>
           </div>
         </form>

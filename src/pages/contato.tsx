@@ -1,9 +1,23 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FormInput } from '../components/form-input'; 
+import type { ChangeEvent, FormEvent } from 'react'; 
+import { FormInput } from '../components/form-input';
+
+interface FormData {
+  assunto: string;
+  nome: string;
+  email: string;
+  confirmaEmail: string;
+  ddd: string;
+  telefone: string;
+  cidade: string;
+  estado: string;
+  titulo: string;
+  mensagem: string;
+  termos: boolean;
+}
 
 export function Contato() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     assunto: '',
     nome: '',
     email: '',
@@ -17,14 +31,20 @@ export function Contato() {
     termos: false,
   });
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prevData => ({
+  // ✅ Tipagem do evento (corrigido para evitar erro com 'checked')
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const target = e.target as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+    const { name, value, type } = target;
+
+    setFormData((prevData) => ({
       ...prevData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === 'checkbox' ? (target as HTMLInputElement).checked : value,
     }));
   };
 
+  // ✅ Reset
   const handleReset = () => {
     setFormData({
       assunto: '',
@@ -41,25 +61,23 @@ export function Contato() {
     });
   };
 
-  const handleSubmit = (e) => {
+  // ✅ Tipagem de formulário
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    
+
     if (formData.email !== formData.confirmaEmail) {
-      alert("Erro: O E-MAIL e a CONFIRMAÇÃO DO E-MAIL não conferem.");
-      return; 
+      alert('Erro: O E-MAIL e a CONFIRMAÇÃO DO E-MAIL não conferem.');
+      return;
     }
-    
-    // **2. Mensagem de Sucesso e Reset:**
+
     alert('Mensagem enviada com sucesso!');
-    handleReset(); // 👈 CHAMA A FUNÇÃO PARA LIMPAR O ESTADO
+    handleReset();
   };
 
   return (
     <main>
       <section className="py-20 bg-gray-100 min-h-screen">
         <div className="container mx-auto px-4 max-w-[1200px]">
-          
           <div className="text-center mb-10">
             <h1 className="text-4xl font-bold text-gray-800">Precisa de ajuda?</h1>
             <h3 className="text-2xl font-semibold text-gray-600 mb-4">Só nos chamar!</h3>
@@ -68,8 +86,11 @@ export function Contato() {
 
           <div className="bg-white p-8 rounded-lg shadow-lg max-w-4xl mx-auto">
             <form onSubmit={handleSubmit}>
+              {/* ASSUNTO */}
               <fieldset className="border border-gray-300 p-6 mb-8 rounded-md">
-                <legend className="text-lg font-semibold text-gray-800 px-2">SELECIONE UMA OPÇÃO</legend>
+                <legend className="text-lg font-semibold text-gray-800 px-2">
+                  SELECIONE UMA OPÇÃO
+                </legend>
                 <div className="select-container relative">
                   <select
                     id="assunto"
@@ -79,7 +100,9 @@ export function Contato() {
                     value={formData.assunto}
                     onChange={handleChange}
                   >
-                    <option value="" disabled>Selecione um assunto</option>
+                    <option value="" disabled>
+                      Selecione um assunto
+                    </option>
                     <option value="suporte">Suporte Técnico</option>
                     <option value="comercial">Informações Comerciais</option>
                     <option value="parceria">Proposta de Parceria</option>
@@ -92,8 +115,11 @@ export function Contato() {
               </fieldset>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* INFORMAÇÕES PESSOAIS */}
                 <fieldset className="border border-gray-300 p-6 rounded-md">
-                  <legend className="text-lg font-semibold text-gray-800 px-2">INFORMAÇÕES PESSOAIS</legend>
+                  <legend className="text-lg font-semibold text-gray-800 px-2">
+                    INFORMAÇÕES PESSOAIS
+                  </legend>
                   <div className="space-y-4">
                     <FormInput
                       label="NOME"
@@ -101,7 +127,7 @@ export function Contato() {
                       name="nome"
                       value={formData.nome}
                       onChange={handleChange}
-                      required={true}
+                      required
                     />
 
                     <FormInput
@@ -111,9 +137,9 @@ export function Contato() {
                       type="email"
                       value={formData.email}
                       onChange={handleChange}
-                      required={true}
+                      required
                     />
-                    
+
                     <FormInput
                       label="CONFIRMAÇÃO DO E-MAIL"
                       id="confirmaEmail"
@@ -121,7 +147,7 @@ export function Contato() {
                       type="email"
                       value={formData.confirmaEmail}
                       onChange={handleChange}
-                      required={true}
+                      required
                     />
 
                     <div className="grid grid-cols-3 gap-2">
@@ -131,7 +157,7 @@ export function Contato() {
                         name="ddd"
                         value={formData.ddd}
                         onChange={handleChange}
-                        required={true}
+                        required
                         maxLength={2}
                         colSpan="col-span-1"
                       />
@@ -142,13 +168,14 @@ export function Contato() {
                         type="tel"
                         value={formData.telefone}
                         onChange={handleChange}
-                        required={true}
+                        required
                         colSpan="col-span-2"
                       />
                     </div>
                   </div>
                 </fieldset>
 
+                {/* MENSAGEM */}
                 <fieldset className="border border-gray-300 p-6 rounded-md">
                   <legend className="text-lg font-semibold text-gray-800 px-2">MENSAGEM</legend>
                   <div className="space-y-4">
@@ -158,7 +185,7 @@ export function Contato() {
                       name="cidade"
                       value={formData.cidade}
                       onChange={handleChange}
-                      required={true}
+                      required
                     />
                     <FormInput
                       label="ESTADO"
@@ -166,7 +193,7 @@ export function Contato() {
                       name="estado"
                       value={formData.estado}
                       onChange={handleChange}
-                      required={true}
+                      required
                     />
                     <FormInput
                       label="TÍTULO DA MENSAGEM"
@@ -174,10 +201,14 @@ export function Contato() {
                       name="titulo"
                       value={formData.titulo}
                       onChange={handleChange}
-                      required={true}
+                      required
                     />
-                    <div className="campo-formulario">
-                      <label htmlFor="mensagem" className="block text-sm font-medium text-gray-700 mb-1">
+
+                    <div>
+                      <label
+                        htmlFor="mensagem"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         MENSAGEM<span className="text-red-500">*</span>
                       </label>
                       <textarea
@@ -202,17 +233,21 @@ export function Contato() {
                         onChange={handleChange}
                       />
                       <label htmlFor="termos" className="text-sm text-gray-700">
-                        Eu li e concordo com os termos da <a href="#" className="text-indigo-600 underline">política de privacidade</a>.
+                        Eu li e concordo com os termos da{' '}
+                        <a href="#" className="text-indigo-600 underline">
+                          política de privacidade
+                        </a>.
                       </label>
                     </div>
                   </div>
                 </fieldset>
               </div>
 
+              {/* BOTÕES */}
               <div className="flex justify-end gap-4 mt-6">
                 <button
-                  type="button" 
-                  onClick={handleReset} 
+                  type="button"
+                  onClick={handleReset}
                   className="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition-colors"
                 >
                   LIMPAR

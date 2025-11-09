@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Sidebar from "../components/side-bar";
 import { Ticket } from "../components/ticket";
-import { getTickets, updateTicketStatus, addMessageToTicket } from "../services/ticket-services";
 import type { StoredTicket, TicketStatus, TicketFilter, ProblemType, Message } from "../types/ticket";
 import { PainelLateral } from "../components/painel-lateral";
 import { TicketConversation } from "../components/conversa-ticket";
 import { NewMessageForm } from "../components/form-nova-mensagem";
+import { fetchAllTickets, sendAttendantReply, updateTicketStatus } from "../services/ticket-services";
+
 
 export function Dashboard() {
   const [allTickets, setAllTickets] = useState<StoredTicket[]>([]);
@@ -14,9 +15,52 @@ export function Dashboard() {
   const [problemTypeFilter, setProblemTypeFilter] = useState<ProblemType | 'todos'>('todos');
   const [searchQuery, setSearchQuery] = useState("");
   const [dateFilter, setDateFilter] = useState("todos");
+  const [isLoading, setIsLoading] = useState(true); 
+  const [error, setError] = useState<string | null>(null);
+
+
+  const MOCK_ATTENDANT_ID = 1; 
+
+
+  
+  const fetchTicketsData = async () => {
+      setIsLoading(true); 
+      setError(null);    
+      try {
+          const data = await fetchAllTickets(); 
+          setAllTickets(data.reverse()); // Exibe o mais recente primeiro
+      } catch (err) {
+          console.error("Erro ao carregar tickets iniciais:", err);
+          const errorMessage = err instanceof Error ? err.message : "Falha ao carregar a lista de tickets do servidor.";
+          setError(errorMessage);
+      } finally {
+          setIsLoading(false); 
+      }
+  };
+
 
   useEffect(() => {
-    setAllTickets(getTickets());
+    fetchTicketsData();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchTickets = async () => {
+        setIsLoading(true); 
+        setError(null);    
+        try {
+            const data = await fetchAllTickets(); 
+            setAllTickets(data);
+        } catch (err) {
+            console.error("Erro ao carregar tickets iniciais:", err);
+            // Captura a mensagem de erro da API ou de falha de rede
+            const errorMessage = err instanceof Error ? err.message : "Falha ao carregar a lista de tickets do servidor.";
+            setError(errorMessage);
+        } finally {
+            setIsLoading(false); 
+        }
+    };
+    fetchTickets();
   }, []);
 
   const ticketCounts = useMemo(() => {
@@ -26,13 +70,34 @@ export function Dashboard() {
       andamento: 0,
       resolvido: 0,
     };
+    
+    
     allTickets.forEach(ticket => {
-      counts[ticket.status]++;
+      const rawStatus = (ticket.status || '').toLowerCase().trim(); 
+    
+    
+    if (rawStatus === 'aberto') {
+      counts.aberto++;
+    } else if (rawStatus === 'andamento') {
+      counts.andamento++;
+    } else if (rawStatus === 'resolvido') {
+      counts.resolvido++;
+    }
     });
+    
+    counts.todos = allTickets.length;
+    
     return counts;
   }, [allTickets]);
 
   const filteredTickets = useMemo(() => {
+    
+    const getMidnightTime = (date: Date): number => {
+      const d = new Date(date);
+      d.setHours(0, 0, 0, 0); 
+      return d.getTime();
+    };
+
     return allTickets
       .filter(ticket => statusFilter === "todos" ? true : ticket.status === statusFilter)
       .filter(ticket => problemTypeFilter === "todos" ? true : ticket.problemType === problemTypeFilter)
@@ -42,48 +107,140 @@ export function Dashboard() {
       })
       .filter(ticket => {
         if (dateFilter === "todos") return true;
-        const ticketDate = new Date(ticket.data);
-        const today = new Date();
-        if (dateFilter === "hoje") return ticketDate.toDateString() === today.toDateString();
+        
+        const ticketDateObject = new Date(ticket.data);
+        const ticketTime = ticketDateObject.getTime();
+        const now = new Date(); // Data e hora atual (local)
+
+        if (dateFilter === "hoje") {
+          const midnightToday = getMidnightTime(now);
+          const tomorrow = new Date(now);
+          tomorrow.setDate(now.getDate() + 1);
+          const midnightTomorrow = getMidnightTime(tomorrow);
+          
+          return ticketTime >= midnightToday && ticketTime < midnightTomorrow;
+        }
+
         if (dateFilter === "semana") {
-          const oneWeekAgo = new Date();
-          oneWeekAgo.setDate(today.getDate() - 7);
-          return ticketDate >= oneWeekAgo;
+          const oneWeekAgo = new Date(now);
+          oneWeekAgo.setDate(now.getDate() - 7);
+          const midnightOneWeekAgo = getMidnightTime(oneWeekAgo);
+          
+          return ticketTime >= midnightOneWeekAgo;
         }
+
         if (dateFilter === "mes") {
-          const oneMonthAgo = new Date();
-          oneMonthAgo.setMonth(today.getMonth() - 1);
-          return ticketDate >= oneMonthAgo;
+          const oneMonthAgo = new Date(now);
+          oneMonthAgo.setDate(now.getDate() - 30);
+          const midnightOneMonthAgo = getMidnightTime(oneMonthAgo);
+          
+          return ticketTime >= midnightOneMonthAgo;
         }
+        
         return true;
       })
       .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime());
   }, [allTickets, statusFilter, problemTypeFilter, searchQuery, dateFilter]);
 
-  const handleUpdateStatus = (ticketId: number, newStatus: TicketStatus) => {
-    updateTicketStatus(ticketId, newStatus);
-    const updatedTickets = getTickets();
-    setAllTickets(updatedTickets);
-    setSelectedTicket(updatedTickets.find(t => t.id === ticketId) || null);
+  const renderContent = () => {
+      if (isLoading) {
+          return (
+              <div className="text-center py-10 px-4 bg-white rounded-lg">
+                  <h3 className="text-xl font-medium text-gray-700">Carregando tickets...</h3>
+                  <p className="text-gray-500 mt-2">Buscando chamados no servidor.</p>
+              </div>
+          );
+      }
+
+      if (error) {
+          return (
+              <div className="text-center py-10 px-4 bg-red-50 rounded-lg border border-red-200">
+                  <h3 className="text-xl font-medium text-red-700">Erro ao carregar tickets</h3>
+                  <p className="text-red-500 mt-2">{error}</p>
+                  <p className="text-red-500 mt-2">Verifique se o backend está rodando em `http://localhost:8080`.</p>
+              </div>
+          );
+      }
+      
+      return (
+        <div className="space-y-4">
+            {filteredTickets.length > 0 ? (
+                filteredTickets.map((ticket) => (
+                    <div key={ticket.id} onClick={() => setSelectedTicket(ticket)} className="cursor-pointer">
+                        <Ticket ticket={ticket} onDelete={() => { alert('Apenas pacientes podem excluir tickets.'); }} />
+                    </div>
+                ))
+            ) : (
+                <p className="text-center text-gray-500 py-8">Nenhum ticket encontrado com os filtros atuais.</p>
+            )}
+        </div>
+      );
+  }
+
+  
+  const handleUpdateStatus = async (ticketId: number, newStatus: TicketStatus) => {
+    try {
+        await updateTicketStatus(ticketId, newStatus);
+        
+        
+        await fetchTicketsData(); 
+
+        alert(`Status do Ticket #${ticketId} atualizado para: ${newStatus.toUpperCase()}`);
+        
+    } catch (err) {
+        console.error("Erro ao atualizar status:", err);
+        const errorMessage = err instanceof Error ? err.message : "Falha ao atualizar o status.";
+        alert(`Erro ao atualizar status: ${errorMessage}`);
+    }
   };
   
-  const handleNewMessage = (ticketId: number, messageText: string) => {
+  const handleNewMessage = async (ticketId: number, messageText: string) => {
+    
     const newMessage: Message = {
       author: 'atendente',
       text: messageText,
       timestamp: new Date().toISOString(),
     };
-    addMessageToTicket(ticketId, newMessage);
-    const updatedTickets = getTickets();
-    setAllTickets(updatedTickets);
-    setSelectedTicket(updatedTickets.find(t => t.id === ticketId) || null);
+    
+    
+    const currentStatus = selectedTicket?.status || 'andamento';
+    
+    try {
+        await sendAttendantReply(ticketId, {
+            idAtendente: MOCK_ATTENDANT_ID, 
+            conteudoConversa: messageText,
+            novoStatus: currentStatus, 
+        });
+        
+        setSelectedTicket(prev => {
+            if (prev && prev.id === ticketId) {
+                return { ...prev, messages: [...prev.messages, newMessage] };
+            }
+            return prev;
+        });
+
+    
+        await fetchTicketsData();
+
+    } catch (err) {
+        console.error("Erro ao enviar mensagem:", err);
+        const errorMessage = err instanceof Error ? err.message : "Falha ao enviar a mensagem.";
+        alert(`Erro ao enviar mensagem: ${errorMessage}`);
+    }
+    
   };
 
   const problemTypeLabels: Record<ProblemType, string> = {
-    'agendamento-consulta': 'Agendamento de consulta',
+    'agendamento-nova-consulta': 'Agendamento de Nova Consulta', 
+    'cancelamento-reagendamento': 'Cancelamento ou Reagendamento', 
     'duvidas-medicamentos': 'Dúvidas sobre medicamentos',
     'resultados-exames': 'Resultados de exames',
-    'sintomas-mal-estar': 'Relatar sintomas / mal-estar',
+    'problema-tecnico': 'Problema técnico com login', 
+    'solicitacao-documento': 'Solicitação de documento', 
+    'reclamacao-atendimento': 'Reclamação de atendimento', 
+    'duvida-pagamento': 'Dúvida sobre convênio/pagamento', 
+    'atualizacao-dados': 'Atualização de dados', 
+    'historico-medico': 'Acesso à histórico médico', 
     'outro': 'Outro',
   };
 
@@ -141,17 +298,7 @@ export function Dashboard() {
           ))}
         </div>
 
-        <div className="space-y-4">
-          {filteredTickets.length > 0 ? (
-            filteredTickets.map((ticket) => (
-              <div key={ticket.id} onClick={() => setSelectedTicket(ticket)} className="cursor-pointer">
-                <Ticket ticket={ticket} onDelete={() => { alert('Apenas pacientes podem excluir tickets.'); }} />
-              </div>
-            ))
-          ) : (
-            <p className="text-center text-gray-500 py-8">Nenhum ticket encontrado com os filtros atuais.</p>
-          )}
-        </div>
+        {renderContent()}
 
         {selectedTicket && (
           <PainelLateral 
@@ -167,7 +314,8 @@ export function Dashboard() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-gray-500">Categoria</p>
-                  <p className="text-gray-700">{problemTypeLabels[selectedTicket.problemType]}</p>
+                  {/* O casting 'as ProblemType' resolve o erro de indexação no TS */}
+                  <p className="text-gray-700">{problemTypeLabels[selectedTicket.problemType as ProblemType]}</p>
                 </div>
                 <div>
                   <label htmlFor="status-update" className="block text-sm font-semibold text-gray-500 mb-1">Status</label>

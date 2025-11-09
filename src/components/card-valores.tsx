@@ -1,4 +1,3 @@
-import React from 'react';
 
 import type { CardValorProps } from '../types/cards-integrantes';
 
