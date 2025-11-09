@@ -13,9 +13,7 @@ export function MeusTickets() {
           </p>
         </div>
 
-        {/* Renderizamos o TicketList. Ele cuidará de buscar
-          e exibir os tickets ou a mensagem de "nenhum ticket".
-        */}
+        
         <TicketList />
 
         <div className="mt-10 text-center">

@@ -1,9 +1,8 @@
-import React from 'react';
 import logo from '../assets/logo-challenge.png';
 import { Button } from '../components/button';
 import { Link } from 'react-router-dom'; 
 
-export function EscolhaPerfil() { // Ou o nome que você deu à sua página
+export function EscolhaPerfil() { 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-sky-50 p-4">
       <div className="p-8 bg-white rounded-lg shadow-xl text-center w-full max-w-md">

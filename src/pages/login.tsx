@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,7 +7,7 @@ import { loginSchema, type LoginFormData } from '../schemas/loginSchemas'
 import { useAuth } from '../components/auth-context-core'; 
 import type { AtendenteData } from '../types/auth-types';
 
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://health-support-java.onrender.com';
 
 export function LoginPage() {
   const navigate = useNavigate();

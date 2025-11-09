@@ -31,9 +31,9 @@ export function Ticket({ ticket, onDelete }: TicketComponentProps) {
   };
 
   
-const firstMessage = (ticket.messages && ticket.messages[0]) 
+  const firstMessage = (ticket.messages && ticket.messages.length > 0) 
   ? ticket.messages[0].text 
-  : (ticket as any).description || 'Nenhuma descrição.';
+  : ticket.title || 'Nenhuma descrição.';
 
   const validatedStatus: TicketStatus = isValidStatus(ticket.status) 
     ? ticket.status 

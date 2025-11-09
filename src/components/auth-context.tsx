@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from 'react'; 
-// Importar os novos tipos e AuthContext
 import type { PacienteData, AtendenteData, AuthProviderProps } from '../types/auth-types'; 
 import { AuthContext } from '../components/auth-context-core';
 
@@ -8,7 +7,7 @@ import { AuthContext } from '../components/auth-context-core';
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Estado para o paciente logado
     const [paciente, setPaciente] = useState<PacienteData | null>(null);
-    // NOVO: Estado para o atendente logado
+    // Estado para o atendente logado
     const [atendente, setAtendente] = useState<AtendenteData | null>(null);
 
     // Função de Login Unificada

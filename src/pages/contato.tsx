@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import type { ChangeEvent, FormEvent } from 'react'; // ✅ Importação de tipos com 'type'
-import { Link } from 'react-router-dom';
+import type { ChangeEvent, FormEvent } from 'react'; 
 import { FormInput } from '../components/form-input';
 
 interface FormData {

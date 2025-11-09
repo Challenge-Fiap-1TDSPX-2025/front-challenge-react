@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import type { StoredTicket, Message, TicketStatus, ProblemType } from '../types/ticket';
 import { Ticket } from './ticket';
 import { PainelLateral } from './painel-lateral';

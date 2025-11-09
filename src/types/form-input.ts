@@ -2,7 +2,6 @@
 import type { FieldError, Merge, FieldErrorsImpl } from 'react-hook-form'; 
 import type { CadastroFormData } from './cadastro-form'; 
 
-// Corrigido: Substitui 'any' por CadastroFormData
 export type RhfError = FieldError | Merge<FieldError, FieldErrorsImpl<CadastroFormData>> | undefined;
 
 export interface FormInputProps {
