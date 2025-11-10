@@ -1,5 +1,10 @@
 import type { CreateTicketPayload, StoredTicket, ProblemType} from '../types/ticket'; 
 
+const API_BASE_URL_ROOT = import.meta.env.VITE_API_BASE_URL || 'https://health-support-java.onrender.com';
+
+const API_BASE_URL = `${API_BASE_URL_ROOT}/tickets/novo`; 
+const API_BASE_URL_TICKETS = `${API_BASE_URL_ROOT}/tickets`;
+
 interface RawMessageData {
   author: string;
   text: string;
@@ -16,9 +21,6 @@ interface RawTicketData {
   messages: RawMessageData[];
   arquivos: string[];
 }
-
-const API_BASE_URL = 'https://health-support-java.onrender.com/tickets/novo'; 
-const API_BASE_URL_TICKETS = 'https://health-support-java.onrender.com/tickets';
 
 export const saveTicket = async (newTicketData: CreateTicketPayload) => {
 
