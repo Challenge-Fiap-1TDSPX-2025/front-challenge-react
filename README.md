@@ -14,7 +14,9 @@ A plataforma foi desenvolvida com foco em usabilidade, desempenho e acessibilida
 ## 🛠 Tecnologias Utilizadas
 - **Front-end:** React, Typescript, Tailwind  
 
-
+## LOGIN DO ATENDENTE PARA A AUTENTICAÇÃO
+- login: leandro@gmail.com
+- senha: leandro
 ---
 
 ## 👨‍👩‍👧‍👦 Integrantes do Grupo
