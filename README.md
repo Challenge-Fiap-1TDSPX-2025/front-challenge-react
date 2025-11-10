@@ -78,6 +78,7 @@ A plataforma foi desenvolvida com foco em usabilidade, desempenho e acessibilida
   (componentes utilizados no projeto)
 
 /pages
+├── cadastro-paciente.tsx
 ├── contato.tsx
 ├── dashboard.tsx
 └── faq.tsx 
@@ -89,11 +90,17 @@ A plataforma foi desenvolvida com foco em usabilidade, desempenho e acessibilida
 └── paciente-page.tsx 
 └── tipo-usuario.tsx 
 
+/schemas
+├── cadastroSchemas.ts
+├── loginSchemas.ts
+
 /services
 ├── ticket-services.ts
 
 /types
+├── auth-types.ts
 ├── button.ts
+├── cadastro-form.ts
 ├── card-beneficio.ts
 ├── card-depoimento.ts
 ├── card-plano.ts
@@ -103,6 +110,7 @@ A plataforma foi desenvolvida com foco em usabilidade, desempenho e acessibilida
 ├── link-rodape.ts
 ├── ticket.ts
 
+.env
 App.tsx
 Index.css
 
@@ -113,6 +121,8 @@ Index.css
 ## 🔗 Links Importantes
 - **Repositório no GitHub:** [https://github.com/Challenge-Fiap-1TDSPX-2025/front-challenge-react](https://github.com/Challenge-Fiap-1TDSPX-2025/front-challenge-react)
 
-- **Vídeo Demonstrativo no YouTube:** [https://youtu.be/-hlR4JnyWh8](https://youtu.be/-hlR4JnyWh8)  
+- **Vídeo Demonstrativo no YouTube:** [https://youtu.be/HuRzx4RMH3g](https://youtu.be/HuRzx4RMH3g)  
+
+- **Vercel:** [https://front-challenge-react.vercel.app/](https://front-challenge-react.vercel.app/)
 
 ---
